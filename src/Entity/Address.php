@@ -2,7 +2,8 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
+
+
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\AddressRepository;
 
@@ -15,8 +16,6 @@ class Address
     private ?int $id = null;
 
     #[ORM\Column(length: 20)]
-    #[Assert\NotBlank]
-    #[Assert\Choice(choices: ['livraison', 'facturation'], message: 'Invalid address type.')]
     private ?string $adr_type = null;
 
     #[ORM\Column(length: 100)]
@@ -29,7 +28,7 @@ class Address
     private ?int $adr_cp = null;
 
     #[ORM\Column]
-    private ?bool $is_default = null;
+    private ?bool $is_default = false;
 
     public function getId(): ?int
     {
@@ -40,11 +39,10 @@ class Address
     {
         return $this->adr_type;
     }
-
     public function setAdrType(string $adr_type): static
     {
         $this->adr_type = $adr_type;
-
+    
         return $this;
     }
 
