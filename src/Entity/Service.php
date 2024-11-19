@@ -14,9 +14,7 @@ class Service
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
-    #[Assert\NotBlank]
-    #[Assert\Choice(choices: ['apres-vente', 'commercial', 'comptabilite', 'equipe'], message: 'Invalid service type.')]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $serv_type = null;
 
     public function getId(): ?int

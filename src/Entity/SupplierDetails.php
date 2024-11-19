@@ -18,7 +18,7 @@ class SupplierDetails
     #[ORM\Column(length: 20)]
     private ?string $spl_siret = null;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(length: 50)]
     private ?string $spl_type = null;
 
     #[ORM\Column]
