@@ -22,3 +22,9 @@ RUN chmod +x /usr/bin/composer
 COPY apache.conf /etc/apache2/sites-enabled/000-default.conf
  
 WORKDIR /var/www
+
+# Attribuer tous les droits à /var/www
+RUN chmod -R 777 /var/www
+
+# Assurer que l'utilisateur www-data possède tous les fichiers
+RUN chown -R www-data:www-data /var/www

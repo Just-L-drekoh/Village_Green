@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -55,6 +57,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?\DateTimeImmutable $user_last_conn = null;
+
+    /**
+     * @var Collection<int, Address>
+     */
+    #[ORM\OneToMany(targetEntity: Address::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $address;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Service $service = null;
+
+    /**
+     * @var Collection<int, SupplierDetails>
+     */
+    #[ORM\OneToMany(targetEntity: SupplierDetails::class, mappedBy: 'user')]
+    private Collection $supplier;
+
+ 
+   
+
+    public function __construct()
+    {
+        $this->address = new ArrayCollection();
+        $this->supplier = new ArrayCollection();
+        
+        
+    }
 
     public function getId(): ?int
     {
@@ -214,4 +242,80 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Address>
+     */
+    public function getAddress(): Collection
+    {
+        return $this->address;
+    }
+
+    public function addAddress(Address $address): static
+    {
+        if (!$this->address->contains($address)) {
+            $this->address->add($address);
+            $address->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAddress(Address $address): static
+    {
+        if ($this->address->removeElement($address)) {
+            // set the owning side to null (unless already changed)
+            if ($address->getUser() === $this) {
+                $address->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getService(): ?Service
+    {
+        return $this->service;
+    }
+
+    public function setService(?Service $service): static
+    {
+        $this->service = $service;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SupplierDetails>
+     */
+    public function getSupplier(): Collection
+    {
+        return $this->supplier;
+    }
+
+    public function addSupplier(SupplierDetails $supplier): static
+    {
+        if (!$this->supplier->contains($supplier)) {
+            $this->supplier->add($supplier);
+            $supplier->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSupplier(SupplierDetails $supplier): static
+    {
+        if ($this->supplier->removeElement($supplier)) {
+            // set the owning side to null (unless already changed)
+            if ($supplier->getUser() === $this) {
+                $supplier->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+   
 }
