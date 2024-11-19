@@ -17,7 +17,17 @@ class RegistrationController extends AbstractController
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
 
-        $ref= rand(0,1000);
+        $ref = mt_rand(10000, 99999);
+        $userRepository = $entityManager->getRepository(User::class);
+        $existingUser = $userRepository->findOneBy(['user_ref' => $ref]);
+        
+        if ($existingUser !== null) {
+            
+            $ref = mt_rand(10000, 99999);
+            
+            $this->addFlash('error', 'Un utilisateur avec le même ref existe déjà');
+            return $this->redirectToRoute('app_register');
+        }
 
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -30,7 +40,7 @@ class RegistrationController extends AbstractController
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             $user->setRoles(['ROLE_USER']);
-            $user->setUserRef($ref);
+            $user->setUserRef("Cli:{$ref}");
             $user->setCoef('1');
             $user->setUserLastConn(new \DateTimeImmutable());
             $entityManager->persist($user);
