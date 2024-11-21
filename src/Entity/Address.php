@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-
+// ...
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\AddressRepository;
@@ -33,6 +33,9 @@ class Address
     #[ORM\ManyToOne(inversedBy: 'address')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $adr_cpl = null;
 
     
 
@@ -108,6 +111,18 @@ class Address
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getAdrCpl(): ?string
+    {
+        return $this->adr_cpl;
+    }
+
+    public function setAdrCpl(?string $adr_cpl): static
+    {
+        $this->adr_cpl = $adr_cpl;
 
         return $this;
     }
