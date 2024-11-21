@@ -1,26 +1,57 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
 
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+    {% block stylesheets %}
+    {{
+      encore_entry_link_tags("app")
+    }}
+    {% endblock %} {% block javascripts %}
+    {{
+      encore_entry_script_tags("app")
+    }}
+    {{
+      encore_entry_script_tags("navbar")
+    }}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-            {{ encore_entry_script_tags("navbar") }}
-
-
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% include('./layout/navbar.html.twig') %}
-        {% block body %}{% endblock %}
-    </body>
+    {% block importmap %}{{
+      importmap("app")
+    }}{% endblock %} {% endblock %}
+  </head>
+  <body>
+    {% include('./partials/_navbar.html.twig') %} {% for messages in app.flashes
+    %} {% for message in messages %}
+    <div class=" text-center py-4 lg:px-4">
+      <div
+        class="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex"
+        role="alert"
+      >
+        <span
+          class="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3"
+          >New</span
+        >
+        <span class="font-semibold mr-2 text-left flex-auto">{{
+          message | raw
+        }}</span>
+      </div>
+    </div>
+    {% endfor %} 
+    
+    {% endfor %} 
+     {% block body %}{% endblock %}
+  </body>
 </html>

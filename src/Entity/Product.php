@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -43,6 +45,24 @@ class Product
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updated_at = null;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    private ?SupplierDetails $supplier = null;
+
+    /**
+     * @var Collection<int, Image>
+     */
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'product')]
+    private Collection $img;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Rubric $rubric = null;
+
+    public function __construct()
+    {
+        $this->img = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -141,6 +161,60 @@ class Product
     public function setUpdatedAt(?\DateTimeImmutable $updated_at): static
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getSupplier(): ?SupplierDetails
+    {
+        return $this->supplier;
+    }
+
+    public function setSupplier(?SupplierDetails $supplier): static
+    {
+        $this->supplier = $supplier;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImg(): Collection
+    {
+        return $this->img;
+    }
+
+    public function addImg(Image $img): static
+    {
+        if (!$this->img->contains($img)) {
+            $this->img->add($img);
+            $img->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImg(Image $img): static
+    {
+        if ($this->img->removeElement($img)) {
+            // set the owning side to null (unless already changed)
+            if ($img->getProduct() === $this) {
+                $img->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getRubric(): ?Rubric
+    {
+        return $this->rubric;
+    }
+
+    public function setRubric(?Rubric $rubric): static
+    {
+        $this->rubric = $rubric;
 
         return $this;
     }

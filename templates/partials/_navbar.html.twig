@@ -1,10 +1,12 @@
 <nav
   class="bg-navbar p-10 rounded-3xl m-2 shadow-lg flex items-center justify-between"
 >
-  <h1 class="text-4xl font-serif font-bold tracking-wide text-black">
+  <!-- Logo -->
+  <a href="{{ path('app_index') }}" class="text-4xl font-serif font-bold tracking-wide text-black">
     Village Green
-  </h1>
+  </a>
 
+  <!-- Desktop Menu -->
   <div class="hidden lg:flex space-x-6">
     <ul class="flex space-x-6">
       <li>
@@ -25,17 +27,21 @@
     </ul>
   </div>
 
-  <div class="flex items-center space-x-4 shadow-xl">
+  <!-- Search Bar -->
+  <div class="hidden lg:flex items-center space-x-4 shadow-xl">
     <input
       type="text"
       placeholder="Rechercher..."
       class="px-4 py-2 border rounded-xl text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
   </div>
-  {# Profile #}
 
-  <div class="flex space-x-6">
-    <a href="{{ path('app_register') }}" class="text-2xl text-black hover:text-blue-500 transition">
+  <!-- Profile & Actions -->
+  <div class="hidden lg:flex space-x-3">
+    <a
+      href="{{ app.user ? path('app_profil') : path('app_login') }}"
+      class="text-2xl text-black hover:text-blue-500 transition"
+    >
       <svg
         class="h-8 w-8"
         fill="none"
@@ -50,8 +56,6 @@
         />
       </svg>
     </a>
- 
-    {# Shipping #}
     <a href="#" class="text-2xl text-black hover:text-blue-500 transition">
       <svg
         class="h-8 w-8"
@@ -67,8 +71,45 @@
         />
       </svg>
     </a>
+    {% if app.user %}
+    <p class="text-xl ">{{ app.user.getUserLastname() }}</p>
+    <p class="text-xl ">{{ app.user.getUserFirstname() }}</p>
+
+    <a
+      href="{{ path('app_logout') }}"
+      class="text-2xl text-black hover:text-blue-500 transition"
+      ><svg
+        class="h-8 w-8"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M21 12L13 12"
+          stroke="#323232"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M18 15L20.913 12.087V12.087C20.961 12.039 20.961 11.961 20.913 11.913V11.913L18 9"
+          stroke="#323232"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M16 5V4.5V4.5C16 3.67157 15.3284 3 14.5 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H14.5C15.3284 21 16 20.3284 16 19.5V19.5V19"
+          stroke="#323232"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        /></svg
+    ></a>
+    {% endif %}
   </div>
 
+  <!-- Mobile Menu Button -->
   <button class="lg:hidden" id="hamburger-menu">
     <svg
       class="h-8 w-8 text-black"
@@ -85,6 +126,8 @@
     </svg>
   </button>
 </nav>
+
+<!-- Mobile Menu -->
 <div id="mobile-menu" class="hidden lg:hidden p-4 m-2 bg-navbar rounded-xl">
   <ul class="space-y-4 flex flex-col items-center justify-center">
     <li>
@@ -111,5 +154,31 @@
         Nous-Contactez
       </a>
     </li>
+    <li>
+      <a
+        href="{{ path('app_register') }}"
+        class="text-2xl text-black hover:text-blue-500 transition block"
+      >
+        Profil
+      </a>
+    </li>
+    <li>
+      <a
+        href="#"
+        class="text-2xl text-black hover:text-blue-500 transition block"
+      >
+        Panier
+      </a>
+    </li>
+    {% if app.user %}
+    <li>
+      <a
+        href="{{ path('app_logout') }}"
+        class="text-2xl text-black hover:text-blue-500 transition block"
+      >
+        Déconnexion
+      </a>
+    </li>
+    {% endif %}
   </ul>
 </div>

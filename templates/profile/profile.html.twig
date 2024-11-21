@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre Profil{% endblock %}
+
+{% block body %}
+
+<div class="container mx-auto mt-12 p-6 bg-gray-100 shadow-lg rounded-xl">
+  <!-- Titre principal -->
+  <h1 class="text-4xl font-bold text-gray-800 text-center mb-4">
+    Heureux de vous revoir,
+    <span class="text-blue-600">{{ user.userFirstname }}</span>!
+  </h1>
+
+  <!-- Référence utilisateur -->
+  <p class="text-lg font-medium text-gray-600 text-center mb-6">
+    Votre Référence :
+    <span class="font-bold text-gray-800">{{ user.userRef }}</span>
+  </p>
+ {% if app.user.roles[0] == 'ROLE_ADMIN' %}
+    <!-- Tableau de bord -->
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <p class="text-sm font-semibold text-gray-500 uppercase">Tableau de bord</p>
+      <a href="#" class="text-xl text-gray-800">Cliquez ici pour accéder au tableau de bord</a>
+    </div>
+  {% endif %}
+  <!-- Détails utilisateur -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Prénom -->
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <p class="text-sm font-semibold text-gray-500 uppercase">Prénom</p>
+      <p class="text-xl text-gray-800">{{ user.userFirstname }}</p>
+    </div>
+
+    <!-- Nom -->
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <p class="text-sm font-semibold text-gray-500 uppercase">Nom</p>
+      <p class="text-xl text-gray-800">{{ user.userLastname }}</p>
+    </div>
+
+    <!-- Email -->
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <p class="text-sm font-semibold text-gray-500 uppercase">Adresse Email</p>
+      <p class="text-xl text-gray-800">{{ user.email }}</p>
+    </div>
+
+    <!-- Téléphone -->
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <p class="text-sm font-semibold text-gray-500 uppercase">Numéro de Téléphone</p>
+      <p class="text-xl text-gray-800">{{ user.userPhone }}</p>
+    </div>
+  </div>
+
+  {% if not app.user.verified %}
+    <!-- Alerte d'activation -->
+    <div class="mt-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4">
+      <p class="font-medium">
+        Votre compte n'est pas encore activé. Cliquez sur le bouton ci-dessous pour recevoir un nouvel e-mail d'activation.
+      </p>
+    </div>
+    <!-- Bouton de renvoi -->
+    <div class="mt-4 text-center">
+      <a href="{{ path('app_resend') }}" 
+         class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
+        Renvoyer l'e-mail de vérification
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

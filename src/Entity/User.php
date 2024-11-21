@@ -13,9 +13,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[ORM\UniqueConstraint(name: 'UNIQ_USER_REF', fields: ['user_ref'])]
-#[ORM\UniqueConstraint(name: 'UNIQ_USER_SIRET', fields: ['user_siret'])]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[ORM\UniqueConstraint(name: 'UNIQ_USER_REF', fields: ['userRef'])]
+#[ORM\UniqueConstraint(name: 'UNIQ_USER_SIRET', fields: ['userSiret'])]
+#[UniqueEntity(fields: ['email'], message: "L'adresse mail est deja utilise. Utiliser une autre adresse mail.")]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -40,22 +40,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $user_ref = null;
+    private ?string $userRef = null;
 
     #[ORM\Column(length: 100)]
-    private ?string $user_firstname = null;
+    private ?string $userFirstname = null;
 
     #[ORM\Column(length: 100)]
-    private ?string $user_lastname = null;
+    private ?string $userLastname = null;
 
     #[ORM\Column(length: 20)]
-    private ?string $user_phone = null;
+    private ?string $userPhone = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
     private ?string $coef = null;
 
     #[ORM\Column(length: 20, nullable: true)]
-    private ?string $user_siret = null;
+    private ?string $userSiret = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $user_last_conn = null;
@@ -74,6 +74,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: SupplierDetails::class, mappedBy: 'user')]
     private Collection $supplier;
+
+    #[ORM\Column]
+    private ?bool $is_verified = null;
 
  
    
@@ -163,48 +166,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserRef(): ?string
     {
-        return $this->user_ref;
+        return $this->userRef;
     }
 
-    public function setUserRef(string $user_ref): static
+    public function setUserRef(string $userRef): static
     {
-        $this->user_ref = $user_ref;
+        $this->userRef = $userRef;
 
         return $this;
     }
 
     public function getUserFirstname(): ?string
     {
-        return $this->user_firstname;
+        return $this->userFirstname;
     }
 
-    public function setUserFirstname(string $user_firstname): static
+    public function setUserFirstname(string $userFirstname): static
     {
-        $this->user_firstname = $user_firstname;
+        $this->userFirstname = $userFirstname;
 
         return $this;
     }
 
     public function getUserLastname(): ?string
     {
-        return $this->user_lastname;
+        return $this->userLastname;
     }
 
-    public function setUserLastname(string $user_lastname): static
+    public function setUserLastname(string $userLastname): static
     {
-        $this->user_lastname = $user_lastname;
+        $this->userLastname = $userLastname;
 
         return $this;
     }
 
     public function getUserPhone(): ?string
     {
-        return $this->user_phone;
+        return $this->userPhone;
     }
 
-    public function setUserPhone(string $user_phone): static
+    public function setUserPhone(string $userPhone): static
     {
-        $this->user_phone = $user_phone;
+        $this->userPhone = $userPhone;
 
         return $this;
     }
@@ -223,12 +226,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserSiret(): ?string
     {
-        return $this->user_siret;
+        return $this->userSiret;
     }
 
-    public function setUserSiret(?string $user_siret): static
+    public function setUserSiret(?string $userSiret): static
     {
-        $this->user_siret = $user_siret;
+        $this->userSiret = $userSiret;
 
         return $this;
     }
@@ -313,6 +316,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $supplier->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isVerified(): ?bool
+    {
+        return $this->is_verified;
+    }
+
+    public function setVerified(bool $is_verified): static
+    {
+        $this->is_verified = $is_verified;
 
         return $this;
     }

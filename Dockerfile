@@ -8,6 +8,12 @@ RUN apt install -y libzip-dev git wget --no-install-recommends
 RUN docker-php-ext-install pdo mysqli pdo_mysql zip;
 
 
+# Install OPCache
+RUN docker-php-ext-install opcache
+
+# Add an OPCache configuration file
+COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+
 # Install nvm
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash \
     && export NVM_DIR="/root/.nvm" \
