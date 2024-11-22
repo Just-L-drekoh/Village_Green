@@ -68,5 +68,14 @@
       </a>
     </div>
   {% endif %}
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+  {% for address in user.address %}
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <p class="text-sm font-semibold text-gray-500 uppercase mb-2">Adresse {{ loop.index }}</p>
+      <p class="text-xl text-gray-800">{{ address.adrAddress }} {{ address.adrCp }} {{ address.adrCity }}</p>
+      <p class="text-sm text-gray-600">{{ address.adrType }}</p>
+    </div>
+  {% endfor %}
+</div>
 </div>
 {% endblock %}
