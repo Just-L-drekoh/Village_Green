@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} 
+Village Green | Nos Rubriques
+{% endblock %}
+
+{% block body %}
+<div class="m-4 p-4 rounded-xl shadow-xl bg-gray-50">
+  <!-- Section Title -->
+  <div class="text-center text-black">
+    <h1 class="text-5xl font-serif font-bold py-6">Tous nos Rubriques</h1>
+  </div>
+  
+  <!-- Rubrics Grid -->
+  <div class="container mx-auto max-w-4xl px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% for rubric in rubrics %}
+        {% if not rubric.parent %}
+            <!-- Parent Rubric Card -->
+            <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow duration-300">
+                <div class="text-center mb-4">
+                    <!-- Parent Rubric Image -->
+                    <img src="{{ rubric.rubImg }}" alt="Image de la rubrique {{ rubric.rubLabel }}" 
+                         class="w-full h-40 object-cover rounded-lg">
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">{{ rubric.rubLabel }}</h2>
+                
+                <!-- Sub-Rubrics List -->
+                <ul class="list-disc list-inside text-gray-600">
+                    {% for subRubric in rubrics %}
+                        {% if subRubric.parent == rubric %}
+                            <li class="mb-2 flex items-center">
+                                <!-- Sub-Rubric Image -->
+                                <img src="{{ subRubric.rubImg }}" alt="Image de la rubrique {{ subRubric.rubLabel }}" 
+                                     class="w-10 h-10 object-cover rounded-full mr-3">
+                                {{ subRubric.rubLabel }}
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

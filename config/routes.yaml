@@ -36,6 +36,19 @@ app_index:
   path: /
   controller: App\Controller\PageViewController::index
 
+#Produits
+app_products:
+  path: /tous-nos-instruments
+  controller: App\Controller\PageViewController::products
+  defaults:
+    roles: ["ROLE_USER"]
+
+#Rubriques
+app_rubrics:
+  path: /nos-rubriques
+  controller: App\Controller\PageViewController::rubriques
+  defaults:
+    roles: ["ROLE_USER"]
 #Profil
 app_profil:
   path: /profil
