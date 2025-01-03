@@ -1,0 +1,45 @@
+#titre {
+  font-family: Arial, sans-serif;
+  font-size: 32px;
+  color: #333;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 80%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+}
+
+thead th {
+  background-color: #4caf50;
+  color: white;
+  padding: 15px;
+  text-align: left;
+  font-size: 20px;
+  border: 1px solid #ddd;
+}
+
+tbody td {
+  padding: 15px;
+  text-align: left;
+  border: 1px solid #ddd;
+  font-size: 18px;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table,
+th,
+td {
+  border: 1px solid #ddd;
+}
+
+tbody tr:hover {
+  background-color: #bd9d9d;
+}
