@@ -18,11 +18,7 @@
 
 				<div
 					class="space-y-8">
-					<!-- Mode de paiement -->
-					<div>
-						<h3 class="text-lg font-medium text-gray-700">Votre mode de paiement :</h3>
-						<p class="text-gray-600 mt-1 bg-gray-100 p-3 rounded-md">{{ app.session.get('paiement') }}</p>
-					</div>
+
 
 					<!-- Adresses -->
 					<div>
@@ -85,7 +81,7 @@
 					{% endif %}
 
 					<div class="mt-6 flex justify-center">
-						<a href="{{ path('cart_order') }}" class="bg-blue-500 text-white px-6 py-3 rounded-md shadow-md hover:bg-blue-600 transition duration-200">Passer à la caisse</a>
+						<a href="{{ path('create_checkout_session') }}" class="bg-blue-500 text-white px-6 py-3 rounded-md shadow-md hover:bg-blue-600 transition duration-200">Passer au paiement</a>
 					</div>
 				</div>
 			</div>

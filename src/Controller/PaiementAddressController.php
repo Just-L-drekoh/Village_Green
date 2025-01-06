@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
-#[Route("/cart/validation-paiement", name: "validation_cart_")]
+#[Route("/cart/validation", name: "validation_cart_")]
 
 class PaiementAddressController extends AbstractController
 {
@@ -43,7 +43,7 @@ class PaiementAddressController extends AbstractController
             $this->addFlash('error', 'Une erreur est survenue , reessayer plus tard.');
             return $this->redirectToRoute('cart_index');
         }
-        return $this->render('paiement_address/Choice_address.html.twig', [
+        return $this->render('address/order/Choice_address.html.twig', [
             'cart' => $cart,
             'user' => $user,
             'addresses' => $addresses,
@@ -68,39 +68,19 @@ class PaiementAddressController extends AbstractController
             if ($formPaiementMethod->isSubmitted() && $formPaiementMethod->isValid()) {
                 $this->processPaiementMethodForm($formPaiementMethod, $session);
             }
-
-            $formBankCart = $this->createForm(BankCartType::class);
-            $formBankCart->handleRequest($request);
-
-            if ($formBankCart->isSubmitted() && $formBankCart->isValid()) {
-                $this->processBankCartForm($formBankCart, $session);
-            }
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Une erreur est survenue , reessayer plus tard.');
+            $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('cart_index');
         }
-        return $this->render('paiement_address/Choice_paiement.html.twig', [
+        return $this->render('address/order/Choice_paiement.html.twig', [
             'formPaiementMethod' => $formPaiementMethod->createView(),
-            'formBankCart' => $formBankCart->createView(),
+
         ]);
     }
 
     private function processPaiementMethodForm($form, SessionInterface $session): void
     {
-        $paiement = $form->get('paiement')->getData();
-        $session->set('paiement', $paiement);
-    }
 
-    private function processBankCartForm($form, SessionInterface $session): void
-    {
-        $data = $form->getData();
-        $hashedNumber = hash('sha256', $data['number']);
-
-        $session->set('BankCart', [
-            'name' => $data['name'],
-            'number' => $hashedNumber,
-            'cvv' => $data['cvv'],
-            'date' => $data['date'],
-        ]);
+        $session->set('paiement', $form->get('paiement')->getData());
     }
 }

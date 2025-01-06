@@ -52,20 +52,15 @@ class StripeController extends AbstractController
     #[Route('/payment-success', name: 'payment_success', methods: ['GET'])]
     public function success()
     {
-        return $this->render('stripe/success.html.twig', [
-            'message' => 'Paiement effectué avec succès !',
-            'status' => 'success'
-        ]);
+        $this->addFlash('success', 'Paiement effectué avec succès !');
+        return $this->redirectToRoute('cart_order');
     }
 
 
     #[Route('/payment-cancel', name: 'payment_cancel', methods: ['GET'])]
     public function cancel()
     {
-
-        return $this->render('stripe/cancel.html.twig', [
-            'message' => 'Paiement annulé !',
-            'status' => 'error'
-        ]);
+        $this->addFlash('error', 'Paiement annulé !');
+        return $this->redirectToRoute('cart_index');
     }
 }

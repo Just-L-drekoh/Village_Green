@@ -20,25 +20,29 @@
 						<p class="text-gray-600">{{ address.city }}
 							-
 							{{ address.cp }}</p>
+
+						<!-- Type d'adresse (livraison, facturation) -->
 						<span class="inline-block mt-2 px-3 py-1 text-sm font-semibold text-white bg-blue-600 rounded-md">{{ address.type }}</span>
+
+						<!-- Liens modifier et supprimer -->
 						<a href="{{ path('address_update', {'id': address.id}) }}" class="text-blue-600 hover:underline px-4 py-2 rounded-md">Modifier</a>
 						<a href="{{ path('address_delete', {'id': address.id}) }}" class="text-red-600 hover:underline px-4 py-2 rounded-md">Supprimer</a>
 					</li>
-
 				{% endfor %}
 			</ul>
 		</section>
 
-		{% if  user.address.count == 2 %}
+		<!-- Vérification si l'utilisateur a 2 adresses -->
+		{% if user.address|length == 2 %}
 			<section class="mt-8 text-center">
-				<a href="{{ path('validation_cart_paiement') }}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition transform hover:scale-105">
-					Choisissez votre mode de paiement
+				<a href="{{ path('cart_recap') }}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition transform hover:scale-105">
+					Allez au recapitulatif
 				</a>
 			</section>
 		{% else %}
 			<section class="mt-8 text-center">
 				<a href="{{ path('address_add') }}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition transform hover:scale-105">
-					Vous devez mettre vos adresses (livraison et facturation)
+					Vous devez ajouter vos adresses (livraison et facturation)
 				</a>
 			</section>
 		{% endif %}
