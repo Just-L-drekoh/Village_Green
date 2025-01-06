@@ -5,6 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
   app.jwt_secret: "%env(JWT_SECRET)%"
+  stripe_key: "%env(STRIPE_KEY)%"
+  stripe_secret: "%env(STRIPE_SECRET)%"
 services:
   # default configuration for services in *this* file
   _defaults:

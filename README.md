@@ -2,6 +2,10 @@ Reste a faire :
 
 ajouter des constraints aux entity
 
+refaire les controllers et templates lier au paiement
+
+ajout de stripe a finaliser (mettre les bonnes redirections de route + avec la session du panier )
+
 Pouvoir generer plusieurs bon de livraison pour une seul commande
 
 editer les bons de livraison + factures
@@ -20,4 +24,4 @@ refaire le mcd en consequences
 
 refaire figma en consequences
 
-faire l'iml
+faire l'uml
