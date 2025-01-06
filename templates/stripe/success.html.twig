@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{% block title %}Paiement Réussi
+{% endblock %}
+{% block body %}
+	<div class="bg-white shadow-md rounded-lg p-8 max-w-lg text-center mx-auto">
+		<h1 class="text-4xl font-bold text-green-600 mb-4">Paiement Réussi</h1>
+		<p class="text-gray-700 text-lg mb-6">Vous avez recu un mail de confirmation{{ message }}</p>
+		<a href="/" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+			Retour à l'accueil
+		</a>
+	</div>
+{% endblock %}

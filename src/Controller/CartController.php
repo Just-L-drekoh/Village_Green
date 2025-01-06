@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Delivery;
 use App\Entity\Product;
 use App\Entity\OrderDetails;
 use App\Service\OrderService;
