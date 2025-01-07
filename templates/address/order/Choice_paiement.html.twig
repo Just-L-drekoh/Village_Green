@@ -31,7 +31,11 @@
 					Le mode de paiement sélectionné :
 					<span class="text-blue-600">{{ paiement }}</span>
 				</p>
-				<p class="text-gray-700 mt-4">Ceci est une description supplémentaire sur le mode de paiement par carte bancaire.</p>
+				<button>
+					<a href="{{ path('create_checkout_session') }}" class="bg-blue-600 text-white px-8 py-3 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition transform hover:scale-105">
+						Payer
+					</a>
+				</button>
 
 			</section>
 		{% elseif paiement == 'virement bancaire' %}
@@ -43,17 +47,7 @@
 				<p class="text-gray-700 mt-4">
 					Veuillez effectuer un virement bancaire avec les informations fournies :
 				</p>
-				<ul class="list-disc list-inside mt-4">
-					<li>Banque :
-						<strong>XYZ</strong>
-					</li>
-					<li>IBAN :
-						<strong>FR7612345678901234567890123</strong>
-					</li>
-					<li>BIC :
-						<strong>ABCDXYZ</strong>
-					</li>
-				</ul>
+
 			</section>
 		{% elseif paiement == 'cheque' %}
 			<section class="mt-8">
@@ -62,12 +56,19 @@
 					<span class="text-blue-600">{{ paiement }}</span>
 				</p>
 				<p class="text-gray-700 mt-4">
-					Veuillez envoyer votre chèque à l'ordre de :
-					<strong>VillageGreen Service Paiement</strong>
+					Vous avez choisi de payer par chèque. Veuillez envoyer votre chèque à l'adresse indiquer dabns l'email de confirmation.
 				</p>
 			</section>
 		{% endif %}
 
 
+		{% if app.session.get('paiement')=='cheque' or app.session.get('paiement')=='virement bancaire' %}
+			<section class="mt-8">
+				<p class="text-gray-700">
+					<a href="{{ path('cart_order') }}" class="text-blue-600 hover:underline">Valider la commande
+					</a>
+				</p>
+			</section>
+		{% endif %}
 	</main>
 {% endblock %}

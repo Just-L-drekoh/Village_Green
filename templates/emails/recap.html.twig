@@ -11,7 +11,6 @@
 			<strong>{{ order.user.firstName }}</strong>,</p>
 		<p>Nous vous confirmons que votre commande a bien été enregistrée. Voici le récapitulatif :</p>
 
-		<!-- Informations de la commande -->
 		<h3>Informations de la commande</h3>
 		<ul>
 			<li>
@@ -27,8 +26,29 @@
 				<strong>Statut :</strong>
 				{{ order.paymentStatus }}</li>
 		</ul>
+		{% if order.paymentMethod == 'virement bancaire' %}
+			<ul class="list-disc list-inside mt-4">
+				<li>Banque :
+					<strong>XYZ</strong>
+				</li>
+				<li>IBAN :
+					<strong>FR7612345678901234567890123</strong>
+				</li>
+				<li>BIC :
+					<strong>ABCDXYZ</strong>
+				</li>
+			</ul>
+		{% elseif order.paymentMethod == 'cheque' %}
+			<p>Veuillez envoyer votre chèque à l'adresse suivante :</p>
+			<address>
+				<strong>Village Green</strong><br>
+				12 rue des Cerisiers<br>
+				75000 Paris
+			</address>
+		{% elseif order.paymentMethod == 'carte bancaire' %}
+			<p>Vous avez payé via votre carte bancaire</p>
+		{% endif %}
 
-		<!-- Détails des produits -->
 		<h3>Détails des produits</h3>
 		<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
 			<thead>

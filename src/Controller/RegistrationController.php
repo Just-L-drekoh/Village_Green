@@ -44,6 +44,7 @@ class RegistrationController extends AbstractController
                 $user->setVerified(false);
                 $user->setRef("Cli:{$ref}");
                 $user->setLastConnect(new \DateTimeImmutable());
+                $user->setcoef(1.00);
 
                 $entityManager->persist($user);
                 $entityManager->flush();

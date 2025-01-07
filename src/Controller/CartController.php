@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Entity\OrderDetails;
-use App\Service\OrderService;
+use App\Service\order\OrderService;
 use App\Service\SendEmailService;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -66,7 +66,7 @@ class CartController extends AbstractController
                     ];
                 }
             }
-
+            dump($dataProduct);
             $session->set('ttc', $total);
         } catch (\Exception $e) {
             $this->addFlash('error', 'Une erreur est survenue.');
@@ -160,13 +160,9 @@ class CartController extends AbstractController
                 return $this->redirectToRoute('cart_index');
             }
 
-            $paiement = $session->get('paiement');
-            if (empty($paiement)) {
-                $this->addFlash('warning', 'Aucun moyen de paiement sélectionné.');
-                return $this->redirectToRoute('validation_cart_paiement');
-            }
+            $paiementMethod = $session->get('paiement');
 
-            $order = $this->orderService->createOrderWithDelivery($this->getUser(), $panier, $paiement);
+            $order = $this->orderService->createOrderWithDelivery($this->getUser(), $panier, $paiementMethod);
             $orderDetails = $this->entityManager->getRepository(OrderDetails::class)->findBy(['order' => $order]);
 
             $this->sendEmailService->send(
