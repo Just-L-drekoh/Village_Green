@@ -18,9 +18,6 @@ RUN apt-get update && \
 # Installer les extensions PHP nécessaires
 RUN docker-php-ext-install pdo pdo_mysql mysqli zip intl opcache
 
-
-
-
 # Install OPCache
 RUN docker-php-ext-install opcache
 
