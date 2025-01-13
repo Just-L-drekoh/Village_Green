@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dictionnaire de données</title>
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <h1 id="titre">Dictionnaire de données</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nom Conceptuel</th>
+          <th>Code</th>
+          <th>Descriptif</th>
+          <th>Type,longueur</th>
+          <th>Table</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {# authentification #}
+        <tr>
+          <td>authentification_Id</td>
+          <td>auth_Id</td>
+          <td>Primary Key(Id)</td>
+          <td>INT</td>
+          <td>authentification</td>
+        </tr>
+        <tr>
+          <td>authentification_email</td>
+          <td>auth_email</td>
+          <td>Email of the authentification</td>
+          <td>VARCHAR(255) UNIQUE</td>
+          <td>authentification</td>
+        </tr>
+        <tr>
+          <td>authentification_password</td>
+          <td>auth_pswd</td>
+          <td>Password of the authentification(hash)</td>
+          <td>VARCHAR(255)</td>
+          <td>authentification</td>
+        </tr>
+        <tr>
+          <td>authentification_role</td>
+          <td>auth_role</td>
+          <td>Role of the authentification</td>
+          <td>VARCHAR(20)</td>
+          <td>authentification</td>
+        </tr>
+        <tr>
+          <td>foreign_key</td>
+          <td>pers_Id</td>
+          <td>Foreign key of the person</td>
+          <td>INT</td>
+          <td>Person(pers_Id)</td>
+        </tr>
+        <tr>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+        </tr>
+        {# Person #}
+        <tr>
+          <td>Id_Person</td>
+          <td>pers_Id</td>
+          <td>Primary Key(Id)</td>
+          <td>INT</td>
+          <td>Person</td>
+        </tr>
+        <tr>
+          <td>Firstname_Person</td>
+          <td>pers_Firstname</td>
+          <td>Firstname of the person</td>
+          <td>VARCHAR(255)</td>
+          <td>Person</td>
+        </tr>
+        <tr>
+          <td>Lastname_Person</td>
+          <td>pers_Lastname</td>
+          <td>Lastname of the person</td>
+          <td>VARCHAR(255)</td>
+          <td>Person</td>
+        </tr>
+        <tr>
+          <td>Email_Person</td>
+          <td>pers_email</td>
+          <td>email of the person</td>
+          <td>VARCHAR(255)</td>
+          <td>Person</td>
+        </tr>
+        <tr>
+          <td>Phone_Person</td>
+          <td>pers_phone</td>
+          <td>phone of the person</td>
+          <td>VARCHAR(30)</td>
+          <td>Person</td>
+        </tr>
+        <tr>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+        </tr>
+        {# customer #}
+        <tr>
+          <td>Id_customer</td>
+          <td>cli_Id</td>
+          <td>Primary Key(Id)</td>
+          <td>INT</td>
+          <td>customer</td>
+        </tr>
+        <tr>
+          <td>individual_customer</td>
+          <td>cli_individual</td>
+          <td>Is the customer an individual</td>
+          <td>BOOL</td>
+          <td>customer</td>
+        </tr>
+        <tr>
+          <td>professional_customer</td>
+          <td>cli_professional</td>
+          <td>Is the customer an professional</td>
+          <td>BOOL</td>
+          <td>customer</td>
+        </tr>
+        <tr>
+          <td>Siret_customer</td>
+          <td>cli_Siret</td>
+          <td>Siret of the client</td>
+          <td>VARCHAR(50) UNIQUE</td>
+          <td>Client</td>
+        </tr>
+        <tr>
+          <td>reference_customer</td>
+          <td>cli_reference</td>
+          <td>reference of the customer</td>
+          <td>VARCHATR(50)</td>
+          <td>customer</td>
+        </tr>
+        <tr>
+          <td>foreign_key</td>
+          <td>pers_Id</td>
+          <td>Foreign key of the person</td>
+          <td>INT NOT NULL UNIQUE</td>
+          <td>Person(pers_Id)</td>
+        </tr>
+        <tr>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+        </tr>
+        {# Supplier #}
+        <tr>
+          <td>Id_Supplier</td>
+          <td>spl_Id</td>
+          <td>Primary Key(Id)</td>
+          <td>INT</td>
+          <td>Supplier</td>
+        </tr>
+        <tr>
+          <td>Siret_Supplier</td>
+          <td>spl_Siret</td>
+          <td>Siret of the supplier</td>
+          <td>VARCHAR(50) UNIQUE</td>
+          <td>Supplier</td>
+        </tr>
+         <tr>
+          <td>Status_Supplier</td>
+          <td>spl_status</td>
+          <td>Status of the supplier(active or not)</td>
+          <td>BOOL</td>
+          <td>Supplier</td>
+        </tr>
+        <tr>
+          <td>importator_Supplier</td>
+          <td>spl_importator</td>
+          <td>importator of the supplier</td>
+          <td>BOOL</td>
+          <td>Supplier</td>
+           <tr>
+          <td>Contructor_Supplier</td>
+          <td>spl_constructor</td>
+          <td>constructor of the supplier</td>
+          <td>BOOL</td>
+          <td>Supplier</td>
+        <tr>
+          <td>foreign_key_person</td>
+          <td>pers_Id</td>
+          <td>foreign key of the person</td>
+          <td>INT NOT NULL UNIQUE</td>
+          <td>Person(pers_Id)</td>
+        </tr>
+        </tr>
+      </tr>
+      <td>------</td>
+      <td>------</td>
+      <td>------</td>
+      <td>------</td>
+      <td>------</td>
+    </tr>
+    {# commercial #}
+        <tr>
+          <td>commercial_Id</td>
+          <td>com_Id</td>
+          <td>Primary Key(Id)</td>
+          <td>INT</td>
+          <td>Commercial</td>
+        </tr>
+        <tr>
+          <td>commercial_status</td>
+          <td>com_status</td>
+          <td>Status of the commercial</td>
+          <td>BOOL</td>
+          <td>Commercial</td>
+        </tr>
+        <tr>
+          <td>foreign_key</td>
+          <td>pers_Id</td>
+          <td>Foreign key of the person</td>
+          <td>INT NOT NULL UNIQUE</td>
+          <td>Person(pers_Id)</td>
+        </tr>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+        </tr>
+
+        {# Address #}
+        <tr>
+          <td>Id_Address</td>
+          <td>adr_id</td>
+          <td>Primary Key(Id)</td>
+          <td>INT</td>
+          <td>Address</td>
+        </tr>
+        <tr>
+          <td>City</td>
+          <td>adr_city</td>
+          <td>City</td>
+          <td>VARCHAR(50)</td>
+          <td>Address</td>
+        </tr>
+        <tr>
+          <td>Address</td>
+          <td>adr_address</td>
+          <td>Postal Address, street, hamlet, etc...</td>
+          <td>VARCHAR(255)</td>
+          <td>Address</td>
+        </tr>
+        <tr>
+          <td>Postal Code</td>
+          <td>adr_cp</td>
+          <td>Postal code</td>
+          <td>VARCHAR(5)</td>
+          <td>Address</td>
+        </tr>
+        <tr>
+          <td>Foreign_key</td>
+          <td>pers_Id</td>
+          <td>Foreign key of the person</td>
+          <td>INT NOT NULL</td>
+          <td>Person(pers_Id)</td>
+        </tr>
+        <tr>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+        </tr>
+
+        {# rubric #}
+        <tr>
+          <td>Id_rubric</td>
+          <td>rub_Id</td>
+          <td>Primary Key(Id)</td>
+          <td>INT</td>
+          <td>rubric</td>
+        </tr>
+        <tr>
+          <td>Label_rubric</td>
+          <td>rub_label</td>
+          <td>Label of the rubric</td>
+          <td>VARCHAR(100)</td>
+          <td>rubric</td>
+        </tr>
+        <tr>
+          <td>Slug_rubric</td>
+          <td>rub_slug</td>
+          <td>slug of the rubric</td>
+          <td>VARCHAR(100)</td>
+          <td>rubric</td>
+        </tr>
+        <tr>
+          <td>description_rubric</td>
+          <td>rub_desc</td>
+          <td>Description of the rubric</td>
+          <td>TEXT</td>
+          <td>rubric</td>
+        </tr>
+        <tr>
+          <td>Foreign_key</td>
+          <td>rub_id_parent</td>
+          <td>Foreign key of the parent</td>
+          <td>INT</td>
+          <td>Rubric(rub_Id)</td>
+        </tr>
+        <tr>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+          <td>------</td>
+        </tr>
+        <tr>
+          {# Product #}
+          <td>Id Product</td>
+          <td>prod_Id</td>
+          <td>Primary Key(Id)</td>
+          <td>INT</td>
+          <td>Product</td>
+        </tr>
+        <tr>
+          <td>Label Product</td>
+          <td>prod_label</td>
+          <td>Label of the product(short)</td>
+          <td>VARCHAR(100)</td>
+          <td>Product</td>
+        </tr>
+        <tr>
+          <td>Description Product</td>
+          <td>prod_desc</td>
+          <td>Label of the product(long)</td>
+          <td>VARCHAR(255)</td>
+          <td>Product</td>
+        </tr>
+        <tr>
+          <td>Price Product</td>
+          <td>prod_price</td>
+          <td>Price of the product</td>
+          <td>DECIMAL(7,2)</td>
+          <td>Product</td>
+        </tr>
+        <tr>
+          <td>image Product</td>
+          <td>prod_img</td>
+          <td>Image of the product</td>
+          <td>VARCHAR(255)</td>
+          <td>Product</td>
+        </tr>
+        <tr>
+          <td>Foreign_key</td>
+          <td>rub_id</td>
+          <td>Foreign key of the rubric(under rub)</td>
+          <td>INT NOT NULL</td>
+          <td>rubric(rub_Id)</td>
+        </tr>
+        <td>Foreign_key</td>
+        <td>pers_id</td>
+        <td>Foreign key of the person</td>
+        <td>INT NOT NULL</td>
+        <td>Person(pers_Id)</td>
+      </tr>
+      <tr>
+        <td>------</td>
+        <td>------</td>
+        <td>------</td>
+        <td>------</td>
+        <td>------</td>
+      </tr>
+      {# Order #}
+      <tr>
+        <td>Id Order</td>
+        <td>ord_Id</td>
+        <td>Primary Key(Id)</td>
+        <td>INT</td>
+        <td>Order</td>
+      </tr>
+      <tr>
+        <td>Partial Order</td>
+        <td>ord_partial</td>
+        <td>Partial of the order</td>
+        <td>BOOL</td>
+        <td>Order</td>
+      </tr>
+      <tr>
+        <td>shipped Order</td>
+        <td>ord_shipped</td>
+        <td>Shipped of the order is full</td>
+        <td>BOOL</td>
+        <td>Order</td>
+      </tr>
+      <tr>
+        <td>Date payment Order</td>
+        <td>ord_dt_pay</td>
+        <td>Date payement of the order</td>
+        <td>DATE</td>
+        <td>Order</td>
+      </tr>
+      <tr>
+        <td>Date shipped Order</td>
+        <td>ord_dt_shipped</td>
+        <td>Date shipped of the order</td>
+        <td>DATE</td>
+        <td>Order</td>
+      </tr>
+      <tr>
+        <td>transfer Order</td>
+        <td>ord_transfer</td>
+        <td>Transfer of the order</td>
+        <td>BOOL</td>
+        <td>Order</td>
+      </tr>
+      <tr>
+        <td>check Order</td>
+        <td>ord_check</td>
+        <td>Check payment of the order</td>
+        <td>BOOL</td>
+        <td>Order</td>
+      </tr>
+      <tr>
+        <td>valide Order</td>
+        <td>ord_valide</td>
+        <td>Valide of the order(shopping)</td>
+        <td>BOOL</td>
+        <td>Order</td>
+      </tr>
+      <tr>
+        <td>archive Order</td>
+        <td>ord_arch</td>
+        <td>Archive of the order(3years)</td>
+        <td>BOOL</td>
+        <td>Order</td>
+      </tr>
+      <tr>
+        <td>Foreign_key</td>
+        <td>pers_Id</td>
+        <td>Foreign key of the person</td>
+        <td>INT NOT NULL</td>
+        <td>Person(pers_Id)</td>
+      </tr>
+      <tr>
+        <td>------</td>
+        <td>------</td>
+        <td>------</td>
+        <td>------</td>
+        <td>------</td>
+      </tr>
+      {# Order Details #}
+      <tr>
+        <td>Id Detail</td>
+        <td>details_Id</td>
+        <td>Primary Key(Id)</td>
+        <td>INT</td>
+        <td>Order Details</td>
+      </tr>
+      <tr>
+        <td>Quantity Detail</td>
+        <td>details_qty</td>
+        <td>Quantity of the detail(product)</td>
+        <td>INT</td>
+        <td>Order Details</td>
+      </tr>
+      <tr>
+        <td>Price Detail</td>
+        <td>details_price</td>
+        <td>Price of the detail(product)</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Order Details</td>
+      </tr>
+      <tr>
+        <td>Foreign_key</td>
+        <td>prod_Id</td>
+        <td>Foreign key of the product</td>
+        <td>INT NOT NULL</td>
+        <td>Product(prod_Id)</td>
+      </tr>
+      <tr>
+        <td>Foreign_key</td>
+        <td>ord_Id</td>
+        <td>Foreign key of the order</td>
+        <td>INT NOT NULL </td>
+        <td>Order(ord_Id)</td>
+      </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

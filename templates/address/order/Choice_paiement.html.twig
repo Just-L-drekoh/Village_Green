@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Choisissez votre mode de paiement
+{% endblock %}
+
+{% block body %}
+	<main class="container mx-auto px-6 py-12">
+		<section class="mb-8">
+			<h1 class="text-3xl font-bold text-gray-800">Mode de Paiement</h1>
+			<p class="text-lg text-gray-600 mt-2">
+				Sélectionnez votre méthode de paiement et suivez les étapes pour finaliser votre achat.
+			</p>
+		</section>
+
+		<!-- Formulaire de sélection de méthode de paiement -->
+		<section class="mb-8">
+			{{ form_start(formPaiementMethod, {'attr': {'class': 'w-full mb-5'}}) }}
+			<div class="mt-4">
+				{{ form_row(formPaiementMethod.paiement, {'attr': {'class': 'w-full border rounded px-3 py-2 shadow-sm'}}) }}
+			</div>
+
+			{{ form_end(formPaiementMethod) }}
+		</section>
+
+		{% set paiement = app.session.get('paiement') %}
+
+		{% if paiement == 'carte bancaire' %}
+			<!-- Paiement par carte bancaire -->
+			<section class="mt-8">
+				<p class="text-2xl font-bold text-gray-800">
+					Le mode de paiement sélectionné :
+					<span class="text-blue-600">{{ paiement }}</span>
+				</p>
+				<button>
+					<a href="{{ path('create_checkout_session') }}" class="bg-blue-600 text-white px-8 py-3 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition transform hover:scale-105">
+						Payer
+					</a>
+				</button>
+
+			</section>
+		{% elseif paiement == 'virement bancaire' %}
+			<section class="mt-8">
+				<p class="text-2xl font-bold text-gray-800">
+					Le mode de paiement sélectionné :
+					<span class="text-blue-600">{{ paiement }}</span>
+				</p>
+				<p class="text-gray-700 mt-4">
+					Veuillez effectuer un virement bancaire avec les informations fournies :
+				</p>
+
+			</section>
+		{% elseif paiement == 'cheque' %}
+			<section class="mt-8">
+				<p class="text-2xl font-bold text-gray-800">
+					Le mode de paiement sélectionné :
+					<span class="text-blue-600">{{ paiement }}</span>
+				</p>
+				<p class="text-gray-700 mt-4">
+					Vous avez choisi de payer par chèque. Veuillez envoyer votre chèque à l'adresse indiquer dabns l'email de confirmation.
+				</p>
+			</section>
+		{% endif %}
+
+
+		{% if app.session.get('paiement')=='cheque' or app.session.get('paiement')=='virement bancaire' %}
+			<section class="mt-8">
+				<p class="text-gray-700">
+					<a href="{{ path('cart_order') }}" class="text-blue-600 hover:underline">Valider la commande
+					</a>
+				</p>
+			</section>
+		{% endif %}
+	</main>
+{% endblock %}
