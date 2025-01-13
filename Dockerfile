@@ -21,6 +21,16 @@ RUN docker-php-ext-install pdo pdo_mysql mysqli zip intl opcache
 # Install OPCache
 RUN docker-php-ext-install opcache
 
+# installation de xDebug via pecl
+# pecl est un dépôt pour les extensions PHP, plus d'informations ici : https://pecl.php.net/
+RUN pecl install xdebug
+# activation de xDebug
+RUN docker-php-ext-enable xdebug
+# Fichier de configuration : /usr/local/etc/php
+RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
 # Add an OPCache configuration file
 COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
