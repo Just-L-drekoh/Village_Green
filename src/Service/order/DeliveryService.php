@@ -4,8 +4,8 @@ namespace App\Service\order;
 
 use App\Entity\DeliveryDetails;
 use App\Form\ChoiceDeliveryType;
-use App\Repository\ProductRepository; // Assuming the repository for products
-use Doctrine\ORM\EntityManagerInterface; // Assuming you're using Doctrine ORM
+use App\Repository\ProductRepository;
+use Doctrine\ORM\EntityManagerInterface; 
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -13,14 +13,14 @@ class DeliveryService
 {
     private FormFactoryInterface $formFactory;
     private RequestStack $requestStack;
-    private ProductRepository $productRepository;  // Added missing product repository
-    private EntityManagerInterface $entityManager; // Added missing entity manager
+    private ProductRepository $productRepository;  
+    private EntityManagerInterface $entityManager; 
 
     public function __construct(
         FormFactoryInterface $formFactory,
         RequestStack $requestStack,
-        ProductRepository $productRepository, // Injected ProductRepository
-        EntityManagerInterface $entityManager  // Injected EntityManager
+        ProductRepository $productRepository,
+        EntityManagerInterface $entityManager
     ) {
         $this->formFactory = $formFactory;
         $this->requestStack = $requestStack;
@@ -55,7 +55,7 @@ class DeliveryService
 
             $deliveryDetails = new DeliveryDetails();
             $deliveryDetails->setProduct($product);
-            $deliveryDetails->setDelivery($delivery); // Assuming you have a $delivery variable
+            $deliveryDetails->setDelivery($delivery); 
             $deliveryDetails->setShippedQty($quantity);
 
             $this->entityManager->persist($deliveryDetails);

@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
+#[ORM\UniqueConstraint(name:'UNIQ_IDENTIFIER_REF', columns:['ref'])]
 class Order
 {
     #[ORM\Id]
@@ -23,7 +24,7 @@ class Order
     #[ORM\Column(length: 100)]
     private ?string $status = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     private ?\DateTimeImmutable $paymentDate = null;
 
     #[ORM\Column(length: 100)]
@@ -35,7 +36,7 @@ class Order
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $document = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 100)]
     private ?string $type = null;
 
     #[ORM\Column]

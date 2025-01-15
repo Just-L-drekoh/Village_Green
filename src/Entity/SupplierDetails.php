@@ -6,8 +6,12 @@ use App\Repository\SupplierDetailsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 #[ORM\Entity(repositoryClass: SupplierDetailsRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_REF', fields: ['ref'])]
+#[UniqueEntity(fields: ['ref'], message: 'Un Compte avec cette referebce existe deja')]
 class SupplierDetails
 {
     #[ORM\Id]

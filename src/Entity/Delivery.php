@@ -17,10 +17,14 @@ class Delivery
     private ?\DateTimeImmutable $date = null;
 
     #[ORM\Column(length: 255)]
+    //Ceci est le bon de livraison qui sera stocker
     private ?string $note = null;
 
     #[ORM\ManyToOne(inversedBy: 'deliveries')]
     private ?Order $ord = null;
+
+    #[ORM\Column(length: 100)]
+    private ?string $ref = null;
 
     public function getId(): ?int
     {
@@ -59,6 +63,18 @@ class Delivery
     public function setOrd(?Order $ord): static
     {
         $this->ord = $ord;
+
+        return $this;
+    }
+
+    public function getRef(): ?string
+    {
+        return $this->ref;
+    }
+
+    public function setRef(string $ref): static
+    {
+        $this->ref = $ref;
 
         return $this;
     }

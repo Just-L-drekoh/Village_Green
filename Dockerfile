@@ -1,48 +1,48 @@
 FROM php:8.3-apache
 
+# Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
+# Install required packages and PHP extensions
 RUN apt-get update && \
     apt-get install -y \
-    libzip-dev \
-    libicu-dev \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    git \
-    wget \
-    curl \
-    --no-install-recommends && \
+        libzip-dev \
+        libicu-dev \
+        libpng-dev \
+        libjpeg62-turbo-dev \
+        libfreetype6-dev \
+        git \
+        wget \
+        curl \
+        --no-install-recommends && \
+    docker-php-ext-install pdo pdo_mysql mysqli zip intl opcache && \
+    pecl install xdebug && \
+    docker-php-ext-enable xdebug && \
     rm -rf /var/lib/apt/lists/*
 
-# Installer les extensions PHP nécessaires
-RUN docker-php-ext-install pdo pdo_mysql mysqli zip intl opcache
-
-# Install OPCache
-RUN docker-php-ext-install opcache
-
-# Add an OPCache configuration file
+# Add OPCache configuration
 COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
-# Install nvm
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash \
-    && export NVM_DIR="/root/.nvm" \
-    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
-    && nvm install 22
-    
-RUN wget https://getcomposer.org/installer -O /var/www/composer-setup.php
-RUN php /var/www/composer-setup.php 
-RUN mv composer.phar /usr/bin/composer 
-RUN chmod +x /usr/bin/composer
- 
+# Add Xdebug configuration
+COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+
+# Install Node.js using NVM
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash && \
+    export NVM_DIR="/root/.nvm" && \
+    . "$NVM_DIR/nvm.sh" && \
+    nvm install 22 && \
+    nvm cache clear
+
+# Install Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    php composer-setup.php && \
+    php -r "unlink('composer-setup.php');" && \
+    mv composer.phar /usr/local/bin/composer
+
+# Configure Apache
 COPY apache.conf /etc/apache2/sites-enabled/000-default.conf
 
-
- 
+# Set working directory and permissions
 WORKDIR /var/www
-
-# Attribuer tous les droits à /var/www
-RUN chmod -R 777 /var/www
-
-# Assurer que l'utilisateur www-data possède tous les fichiers
-RUN chown -R www-data:www-data /var/www
+RUN chmod -R 755 /var/www && \
+    chown -R www-data:www-data /var/www

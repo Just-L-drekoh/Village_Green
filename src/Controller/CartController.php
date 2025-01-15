@@ -54,7 +54,7 @@ class CartController extends AbstractController
                 $product = $productRepository->find($id);
                 if ($product) {
                     $productDetails = $this->calculateProductDetails($product, $quantity);
-                    $total += $productDetails['total'];
+                    $total += ($productDetails['total']);
                     $totalTaxes += $productDetails['totalTaxes'];
 
                     $dataProduct[] = [
@@ -66,8 +66,10 @@ class CartController extends AbstractController
                     ];
                 }
             }
-            dump($dataProduct);
-            $session->set('ttc', $total);
+            $formattedTotal = (float) number_format($total, 2, '.', '');
+            dump($formattedTotal);
+            $session->set('ttc', $formattedTotal);
+            
         } catch (\Exception $e) {
             $this->addFlash('error', 'Une erreur est survenue.');
             return $this->redirectToRoute('cart_index');

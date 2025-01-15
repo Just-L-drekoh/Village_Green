@@ -40,7 +40,7 @@ class OrderService
             }
 
             if ($product->getStock() < $quantity) {
-                throw new \Exception("Stock insuffisant pour le produit {$product->getName()}");
+                throw new \Exception(`Stock insuffisant pour le produit {$product->getLabel()}`);
             }
 
             $taxRate = $product->getTax()?->getRate() ?? 0;

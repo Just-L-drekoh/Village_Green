@@ -56,6 +56,23 @@ class AppFixtures extends Fixture
             throw new \RuntimeException('Erreur lors de la création de l\'utilisateur admin', 0, $e);
         }
 
+        try {
+            $user = new \App\Entity\User();
+            $user->setEmail('herbomel.logan@proton.me');
+            $user->setPassword(password_hash('password', PASSWORD_DEFAULT));
+            $user->setFirstName('Logan');
+            $user->setLastName('Herbomel');
+            $user->setPhone('0123456789');
+            $user->setLastConnect(new \DateTimeImmutable());
+            $user->setVerified(false);
+            $user->setRef("Cli:12345");
+            $user->setRoles(['ROLE_ADMIN']);
+
+            $manager->persist($user);
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Erreur lors de la création de l\'utilisateur admin', 0, $e);
+        }
+
         # Creation de 9 Utilisateurs dans la BDD
         for ($i = 0; $i < 9; $i++) {
             try {

@@ -2,19 +2,24 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\Query\Expr\Math;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class StripeController extends AbstractController
 {
     #[Route('/create-checkout-session', name: 'create_checkout_session')]
-    public function createCheckoutSession(): JsonResponse | RedirectResponse
+    public function createCheckoutSession(SessionInterface $session): JsonResponse | RedirectResponse
     {
+
+        $price = $session->get("ttc");
+        
         try {
             Stripe::setApiKey($this->getParameter('stripe_secret'));
 
@@ -26,6 +31,8 @@ class StripeController extends AbstractController
                 return $this->json(['error' => 'La clé secrète Stripe n\'est pas configurée.'], 500);
             }
 
+            $priceint = round($price *100);
+            
             $session = Session::create([
                 'payment_method_types' => ['card'],
                 'line_items' => [[
@@ -34,7 +41,7 @@ class StripeController extends AbstractController
                         'product_data' => [
                             'name' => 'Produit de test',
                         ],
-                        'unit_amount' => 1000,
+                        'unit_amount' => $priceint,
                     ],
                     'quantity' => 1,
                 ]],
