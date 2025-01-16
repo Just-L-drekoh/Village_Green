@@ -25,6 +25,7 @@ class OrderService
             ->setRef(uniqid(true))
             ->setPaymentMethod($paymentMethod)
             ->setType('commande')
+            ->setRef(uniqid())
             ->setPaymentDate(new \DateTimeImmutable())
             ->setPaymentStatus('En attente de validation')
             ->setDate(new \DateTimeImmutable())
@@ -69,6 +70,7 @@ class OrderService
         $delivery = new Delivery();
         $delivery->setOrd($order)
             ->setDate(new \DateTimeImmutable())
+            ->setRef(uniqid())
             ->setNote('Livraison en cours de traitement');
 
 

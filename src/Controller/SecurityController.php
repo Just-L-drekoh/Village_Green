@@ -10,27 +10,34 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\Security;
 
 class SecurityController extends AbstractController
 {
+    public function __construct(private EntityManagerInterface $entityManager)
+    {
+    }
 
     #[Route('/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         $error = $authenticationUtils->getLastAuthenticationError();
-
         $lastUsername = $authenticationUtils->getLastUsername();
+
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $lastUsername]);
+
+        if ($user) {
+            $user->setLastConnect(new \DateTimeImmutable());
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        }
 
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
         ]);
     }
-
 
     #[Route('/logout', name: 'app_logout')]
     public function logout(SessionInterface $session): void
@@ -40,22 +47,13 @@ class SecurityController extends AbstractController
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    /** 
-     * @param Request 
-     * @param UserPasswordHasherInterface 
-     * @param EntityManagerInterface 
-     * @param int 
-     * 
-     * @return Response
-     */
     #[Route('/change-password/{id}', name: 'app_change_password')]
     public function changePassword(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
-        EntityManagerInterface $entityManager,
         int $id
     ): Response {
-        $user = $entityManager->getRepository(User::class)->find($id);
+        $user = $this->entityManager->getRepository(User::class)->find($id);
 
         if (!$user) {
             $this->addFlash('error', 'Utilisateur introuvable.');
@@ -83,8 +81,8 @@ class SecurityController extends AbstractController
                 $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
                 $user->setPassword($hashedPassword);
 
-                $entityManager->persist($user);
-                $entityManager->flush();
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
 
                 $this->addFlash('success', 'Votre mot de passe a été modifié avec succès.');
                 return $this->redirectToRoute('app_profile');

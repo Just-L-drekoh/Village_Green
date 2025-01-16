@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Entity\OrderDetails;
+
 use App\Service\order\OrderService;
 use App\Service\SendEmailService;
 use App\Repository\ProductRepository;
@@ -23,18 +24,21 @@ class CartController extends AbstractController
     ) {}
 
     private function calculateProductDetails(Product $product, int $quantity): array
-    {
-        $taxRate = $product->getTax()?->getRate() ?? 0;
-        $priceWithTax = $product->getPrice() * (1 + $taxRate / 100);
-        $total = $priceWithTax * $quantity;
-        $totalTaxes = ($priceWithTax - $product->getPrice()) * $quantity;
+{
+    $userCoef = $this->getUser() ? $this->getUser()->getCoef() : 1; 
+    $taxRate = $product->getTax() ? $product->getTax()->getRate() : 0;  
+    $priceWithTax = $product->getPrice() * (1 + $taxRate / 100);
+    $totalTaxes = ($priceWithTax - $product->getPrice()) * $quantity;
+    $total = $priceWithTax * $quantity * $userCoef;
+    dump($total);
+    return [
+        'priceWithTax' => $priceWithTax,
+        'total' => $total,
+        'totalTaxes' => $totalTaxes,
+        
+    ];
+}
 
-        return [
-            'priceWithTax' => $priceWithTax,
-            'total' => $total,
-            'totalTaxes' => $totalTaxes,
-        ];
-    }
 
     #[Route('/', name: 'index')]
     public function viewCart(ProductRepository $productRepository, SessionInterface $session): Response
@@ -56,7 +60,6 @@ class CartController extends AbstractController
                     $productDetails = $this->calculateProductDetails($product, $quantity);
                     $total += ($productDetails['total']);
                     $totalTaxes += $productDetails['totalTaxes'];
-
                     $dataProduct[] = [
                         'product' => $product,
                         'quantity' => $quantity,
@@ -66,10 +69,13 @@ class CartController extends AbstractController
                     ];
                 }
             }
+
+            $session->set('data',$dataProduct);
+            dump($dataProduct);
             $formattedTotal = (float) number_format($total, 2, '.', '');
-            dump($formattedTotal);
-            $session->set('ttc', $formattedTotal);
             
+            $session->set('ttc', $formattedTotal);
+            dump($session->get('ttc'));
         } catch (\Exception $e) {
             $this->addFlash('error', 'Une erreur est survenue.');
             return $this->redirectToRoute('cart_index');
