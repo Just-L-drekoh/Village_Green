@@ -58,7 +58,7 @@
 
 			<section class="mt-10 text-center">
 				<p class="text-2xl font-bold text-gray-900">Total :
-					<span class="text-blue-600">{{ total | number_format(2, '.', ',') }}€</span>
+					<span class="text-blue-600">{{ total | number_format(2, '.', ',') }}€ TTC</span>
 				</p>
 <p class="mt-4 text-lg text-gray-700">Le prix affiché comprend le tarif de base du produit, ajusté par le coefficient appliqué par l'administrateur du site, ainsi que la TVA applicable en France.</p>
 				<a href="{{ path('validation_cart_address') }}" class="inline-block mt-6 bg-blue-600 text-white px-8 py-3 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition transform hover:scale-105">

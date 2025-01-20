@@ -103,7 +103,7 @@ class CartController extends AbstractController
             $session->set('panier', $panier);
 
             return $this->redirectToRoute('cart_index');
-        } catch (\Exception $e) {
+        } catch (\Exception ) {
             $this->addFlash('error', 'Une erreur est survenue.');
             return $this->redirectToRoute('cart_index');
         }
