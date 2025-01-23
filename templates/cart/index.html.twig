@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Panier de
-	{{ app.user.firstName | e }}
+	
+	Votre Panier 
 {% endblock %}
 
 {% block body %}
@@ -11,7 +11,7 @@
 			<h1 class="text-4xl font-bold text-gray-900">Votre Panier</h1>
 		</header>
 
-		{% if products|length == 0 %}
+		{% if cartDetails|length == 0 %}
 			<section class="flex flex-col items-center">
 				<p class="text-lg text-gray-600 mb-6">Votre panier est vide.</p>
 				<a href="{{ path('product_index') }}" class="bg-blue-600 text-white px-8 py-3 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition transform hover:scale-105">
@@ -20,7 +20,7 @@
 			</section>
 		{% else %}
 			<section class="space-y-6">
-				{% for product in products %}
+				{% for product in cartDetails %}
 					<article class="bg-white rounded-lg shadow-lg p-6 flex flex-col md:flex-row items-center justify-between">
 						<div class="flex items-center space-x-6 mb-4 md:mb-0">
 							{% if product.product.image|length > 0 %}
@@ -49,7 +49,7 @@
 							</a>
 						</div>
 
-						<a href="{{ path('cart_allRemove', { id: product.product.id }) }}" class="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 hover:shadow-lg transition">
+						<a href="{{ path('cart_clear', { id: product.product.id }) }}" class="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 hover:shadow-lg transition">
 							Supprimer
 						</a>
 					</article>
@@ -57,10 +57,14 @@
 			</section>
 
 			<section class="mt-10 text-center">
-				<p class="text-2xl font-bold text-gray-900">Total :
-					<span class="text-blue-600">{{ total | number_format(2, '.', ',') }}€ TTC</span>
-				</p>
-<p class="mt-4 text-lg text-gray-700">Le prix affiché comprend le tarif de base du produit, ajusté par le coefficient appliqué par l'administrateur du site, ainsi que la TVA applicable en France.</p>
+					<p class="total">Total TTC :
+						{{ totals.total|number_format(2, ',', ' ') }}
+						€</p>
+				</div>
+				<a href="{{ path('cart_clear') }}" class="inline-block mt-6 bg-red-600 text-white px-8 py-3 rounded-lg shadow-md hover:bg-red-700 hover:shadow-lg transition transform hover:scale-105">
+					Effacer tout le panier
+				</a>
+				<p class="mt-4 text-lg text-gray-700">Le prix affiché comprend le tarif de base du produit, ajusté par le coefficient appliqué par l'administrateur du site, ainsi que la TVA applicable en France.</p>
 				<a href="{{ path('validation_cart_address') }}" class="inline-block mt-6 bg-blue-600 text-white px-8 py-3 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition transform hover:scale-105">
 					Choisir une adresse
 				</a>

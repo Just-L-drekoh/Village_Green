@@ -23,8 +23,13 @@ class PaiementAddressController extends AbstractController
     public function chooseAddress(SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
         try {
-            $cart = $session->get('panier', []);
+            $cart = $session->get('shoppingCart', []);
 
+            if(!$this->getUser())
+            {
+                $this->addFlash('error', 'Vous devez Vous Connectez pour continuer');
+                return $this->redirectToRoute('app_login');
+            }
             if (empty($cart)) {
                 $this->addFlash('warning', 'Votre panier est vide');
                 return $this->redirectToRoute('cart_index');
@@ -68,6 +73,7 @@ class PaiementAddressController extends AbstractController
             if ($formPaiementMethod->isSubmitted() && $formPaiementMethod->isValid()) {
                 $this->processPaiementMethodForm($formPaiementMethod, $session);
             }
+            dump($session->get('paymentMethod'));
         } catch (\Exception $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('cart_index');
@@ -81,6 +87,6 @@ class PaiementAddressController extends AbstractController
     private function processPaiementMethodForm($form, SessionInterface $session): void
     {
 
-        $session->set('paiement', $form->get('paiement')->getData());
+        $session->set('paymentMethod', $form->get('paiement')->getData());
     }
 }

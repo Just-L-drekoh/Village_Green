@@ -18,7 +18,7 @@ const ProductList = ({ products }) => {
             <p>{product.stock} en stock</p>
           </div>
           <a
-            href={`http://localhost/product/${product.slug}`}
+            href={`http://localhost:81/product/${product.slug}`}
             className="flex items-center text-indigo-500 hover:text-indigo-700 transition-colors duration-200"
           >
             Voir en détail

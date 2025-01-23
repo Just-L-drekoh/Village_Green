@@ -2,12 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
 use App\Entity\OrderDetails;
-
+use App\Entity\Product;
 use App\Service\order\OrderService;
-use App\Service\SendEmailService;
-use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,224 +16,180 @@ class CartController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private OrderService $orderService,
-        private SendEmailService $sendEmailService
+        private OrderService $orderService
+        
     ) {}
 
     private function calculateProductDetails(Product $product, int $quantity): array
-{
-    $userCoef = $this->getUser() ? $this->getUser()->getCoef() : 1; 
-    $taxRate = $product->getTax() ? $product->getTax()->getRate() : 0;  
-    $priceWithTax = $product->getPrice() * (1 + $taxRate / 100);
-    $totalTaxes = ($priceWithTax - $product->getPrice()) * $quantity;
-    $total = $priceWithTax * $quantity * $userCoef;
-    dump($total);
-    return [
-        'priceWithTax' => $priceWithTax,
-        'total' => $total,
-        'totalTaxes' => $totalTaxes,
-        
-    ];
-}
-
-
-    #[Route('/', name: 'index')]
-    public function viewCart(ProductRepository $productRepository, SessionInterface $session): Response
     {
-        try {
-            if (!$this->getUser()) {
-                $this->addFlash('warning', 'Vous devez vous connecter pour voir votre panier.');
-                return $this->redirectToRoute('app_login');
-            }
-
-            $panier = $session->get('panier', []);
-            $dataProduct = [];
-            $total = 0;
-            $totalTaxes = 0;
-
-            foreach ($panier as $id => $quantity) {
-                $product = $productRepository->find($id);
-                if ($product) {
-                    $productDetails = $this->calculateProductDetails($product, $quantity);
-                    $total += ($productDetails['total']);
-                    $totalTaxes += $productDetails['totalTaxes'];
-                    $dataProduct[] = [
-                        'product' => $product,
-                        'quantity' => $quantity,
-                        'priceWithTax' => $productDetails['priceWithTax'],
-                        'total' => $productDetails['total'],
-                        'totalTaxes' => $productDetails['totalTaxes'],
-                    ];
-                }
-            }
-
-            $session->set('data',$dataProduct);
-            dump($dataProduct);
-            $formattedTotal = (float) number_format($total, 2, '.', '');
-            
-            $session->set('ttc', $formattedTotal);
-            dump($session->get('ttc'));
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Une erreur est survenue.');
-            return $this->redirectToRoute('cart_index');
+        if ($quantity <= 0) {
+            throw new \InvalidArgumentException('La quantité doit être supérieure à 0');
         }
 
-        return $this->render('cart/index.html.twig', [
-            'products' => $dataProduct,
+        $priceQuantity = $product->getPrice() * $quantity;
+        $taxRate = $product->getTax()->getRate() / 100;
+        $priceWithTax = $priceQuantity * (1 + $taxRate);
+        
+        $user = $this->getUser();
+        if (!$user) {
+            throw new \RuntimeException('Utilisateur non connecté');
+        }
+        
+        $userCoef = 1.05;
+        $finalPrice = $priceWithTax * $userCoef;
+        
+        return [
+            'price_per_unit' => $product->getPrice(),
+            'quantity' => $quantity,
+            'price_quantity' => $priceQuantity,
+            'tax_rate' => $taxRate,
+            'price_with_tax' => $priceWithTax,
+            'user_coef' => $userCoef,
+            'final_price' => $finalPrice,
+        ];
+    }
+
+    private function calculateCartTotal(array $cartDetails): array
+    {
+        $total = 0;
+        $totalWithoutTax = 0;
+        $totalTax = 0;
+
+        foreach ($cartDetails as $item) {
+            $details = $item['details'];
+            $total += $details['final_price'];
+            $totalWithoutTax += $details['price_quantity'];
+            $totalTax += ($details['price_with_tax'] - $details['price_quantity']);
+        }
+
+        return [
             'total' => $total,
-            'totalTaxes' => $totalTaxes,
+            'total_without_tax' => $totalWithoutTax,
+            'total_tax' => $totalTax
+        ];
+    }
+
+    #[Route('/', name: 'index')]
+    public function index(SessionInterface $session): Response
+    {
+        $shoppingCart = $session->get('shoppingCart', []);
+        $cartDetails = [];
+
+        foreach ($shoppingCart as $productId => $quantity) {
+            $product = $this->entityManager->getRepository(Product::class)->find($productId);
+            if ($product) {
+                $cartDetails[] = [
+                    'product' => $product,
+                    'quantity' => $quantity,
+                    'details' => $this->calculateProductDetails($product, $quantity)
+                ];
+            }
+        }
+        dump($cartDetails);
+        $session->set('cartDetails', $cartDetails);
+        $totals = $this->calculateCartTotal($cartDetails);
+        
+        return $this->render('cart/index.html.twig', [
+            'cartDetails' => $cartDetails,
+            'totals' => $totals
         ]);
     }
 
+
     #[Route('/add/{id}', name: 'add')]
-    public function add(Product $product = null, SessionInterface $session): Response
+    public function add(Product $product, SessionInterface $session): Response
     {
-        try {
-            if (!$product) {
-                $this->addFlash('error', 'Produit non trouvé.');
-                return $this->redirectToRoute('cart_index');
-            }
+        $shoppingCart = $session->get('shoppingCart', []);
+        $productId = $product->getId();
 
-            $panier = $session->get('panier', []);
-            $panier[$product->getId()] = ($panier[$product->getId()] ?? 0) + 1;
-
-            $session->set('panier', $panier);
-
-            return $this->redirectToRoute('cart_index');
-        } catch (\Exception ) {
-            $this->addFlash('error', 'Une erreur est survenue.');
-            return $this->redirectToRoute('cart_index');
+        if (!isset($shoppingCart[$productId])) {
+            $shoppingCart[$productId] = 0;
         }
+        
+        $shoppingCart[$productId]++;
+        $session->set('shoppingCart', $shoppingCart);
+
+        $this->addFlash('success', 'Produit ajouté au panier');
+        
+        return $this->redirectToRoute('cart_index');
     }
 
     #[Route('/remove/{id}', name: 'remove')]
     public function remove(Product $product, SessionInterface $session): Response
     {
-        try {
-            $panier = $session->get('panier', []);
-            $id = $product->getId();
+        $shoppingCart = $session->get('shoppingCart', []);
+        $productId = $product->getId();
 
-            if (!empty($panier[$id])) {
-                $panier[$id]--;
-                if ($panier[$id] <= 0) {
-                    unset($panier[$id]);
-                }
+        if (isset($shoppingCart[$productId])) {
+            if ($shoppingCart[$productId] > 1) {
+                $shoppingCart[$productId]--;
+            } else {
+                unset($shoppingCart[$productId]);
             }
-
-            $session->set('panier', $panier);
-
-            return $this->redirectToRoute('cart_index');
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Une erreur est survenue.');
-            return $this->redirectToRoute('cart_index');
+            
+            $session->set('shoppingCart', $shoppingCart);
         }
+
+        return $this->redirectToRoute('cart_index');
     }
 
-    #[Route('/allRemove/{id}', name: 'allRemove')]
-    public function allRemove(Product $product, SessionInterface $session): Response
+    #[Route('/clear', name: 'clear')]
+    public function clear(SessionInterface $session): Response
     {
-        try {
-            $panier = $session->get('panier', []);
-            $id = $product->getId();
-
-            if (!empty($panier[$id])) {
-                unset($panier[$id]);
-            }
-
-            $session->set('panier', $panier);
-
-            return $this->redirectToRoute('cart_index');
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Une erreur est survenue.');
-            return $this->redirectToRoute('cart_index');
-        }
+        $session->remove('shoppingCart');
+        
+        return $this->redirectToRoute('cart_index');
     }
 
-
-    #[Route('/order', name: 'order')]
-    public function order(SessionInterface $session): Response
+    #[Route('/checkout', name: 'checkout')]
+    public function checkout(SessionInterface $session)
     {
-        try {
-            if (!$this->getUser()) {
-                $this->addFlash('warning', 'Vous devez vous connecter pour passer une commande.');
-                return $this->redirectToRoute('app_login');
-            }
-
-            $panier = $session->get('panier', []);
-            if (empty($panier)) {
-                $this->addFlash('warning', 'Votre panier est vide.');
-                return $this->redirectToRoute('cart_index');
-            }
-
-            $paiementMethod = $session->get('paiement');
-
-            $order = $this->orderService->createOrderWithDelivery($this->getUser(), $panier, $paiementMethod);
-            $orderDetails = $this->entityManager->getRepository(OrderDetails::class)->findBy(['order' => $order]);
-
-            $this->sendEmailService->send(
-                'no-reply@village-green.fr',
-                $session->get('user')->getEmail(),
-                'Votre commande sur le site Village Green',
-                'recap',
-                [
-                    'order' => $order,
-                    'orderDetails' => $orderDetails
-                ]
-            );
-
-            $session->clear();
-            $this->addFlash('success', 'Votre commande a été enregistrée avec succès.(Vous allez recevoir un mail de confirmation)');
-            return $this->redirectToRoute('profile_index');
-        } catch (\Exception $e) {
-            $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute('cart_index');
-        }
-    }
-
-    #[Route('/recap', name: 'recap')]
-    public function recap(ProductRepository $productRepository, SessionInterface $session): Response
-    {
-        try {
-            if (!$this->getUser()) {
-                $this->addFlash('warning', 'Vous devez vous connecter pour voir votre récapitulatif.');
-                return $this->redirectToRoute('app_login');
-            }
-
-            $panier = $session->get('panier', []);
-            $address = $session->get('address');
-            $dataProduct = [];
-            $total = 0;
-            $totalTaxes = 0;
-
-            foreach ($panier as $id => $quantity) {
-                $product = $productRepository->find($id);
-                if ($product) {
-                    $productDetails = $this->calculateProductDetails($product, $quantity);
-                    $total += $productDetails['total'];
-                    $totalTaxes += $productDetails['totalTaxes'];
-
-                    $dataProduct[] = [
-                        'product' => $product,
-                        'quantity' => $quantity,
-                        'priceWithTax' => $productDetails['priceWithTax'],
-                        'total' => $productDetails['total'],
-                        'totalTaxes' => $productDetails['totalTaxes'],
-                    ];
-                }
-            }
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Une erreur est survenue.');
-            return $this->redirectToRoute('cart_index');
-        }
+        $cartDetails=$session->get('cartDetails');
+        dump($cartDetails);
 
         return $this->render('cart/recap.html.twig', [
-            'recap' => [
-                'products' => $dataProduct,
-                'addresses' => $address,
-                'total' => $total,
-                'totalTaxes' => $totalTaxes,
-            ],
-
+            'cartDetails'=> $cartDetails
         ]);
     }
+
+    #[Route('/validation', name: 'validation')]
+    public function validation(SessionInterface $session)
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            $this->addFlash('error', 'Vous devez être connecté pour valider votre commande.');
+            return $this->redirectToRoute('app_login');
+        }
+    
+        $cartDetails = $session->get('cartDetails');
+        dump($cartDetails);
+        if (!$cartDetails || empty($cartDetails)) {
+            $this->addFlash('error', 'Votre panier est vide.');
+
+            return $this->redirectToRoute('cart_index');
+        }
+    
+
+        $paymentMethod = $session->get('paymentMethod');
+
+        if (!$paymentMethod) {
+
+            $this->addFlash('error', 'Veuillez choisir un mode de paiement.');
+            return $this->redirectToRoute('cart_payment');
+        }
+            $final_price = $session->get('cartDetails',['final_price']);
+        
+          $order = $this->orderService->createOrder($user, $cartDetails, $paymentMethod, $final_price);
+          $orderDetails = $this->entityManager->getRepository(OrderDetails::class)->findBy(['order' => $order]);
+          $this->orderService->sendOrderConfirmationEmail($user, $order, $orderDetails);
+    
+            $this->addFlash('success', 'Votre commande a été validée.');
+            $session->remove('shoppingCart'); 
+            $session->remove('paymentMethod');
+       
+    
+        return $this->redirectToRoute('VillageGreen_index');
+    }
+    
+
 }

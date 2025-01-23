@@ -4,80 +4,92 @@ namespace App\Service\order;
 
 use App\Entity\User;
 use App\Entity\Order;
-use App\Entity\Product;
-use App\Entity\Delivery;
 use App\Entity\OrderDetails;
+use App\Service\SendEmailService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class OrderService
 {
     private EntityManagerInterface $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    private SendEmailService $sendEmailService;
+
+    public function __construct(EntityManagerInterface $entityManager, SendEmailService $sendEmailService)
     {
         $this->entityManager = $entityManager;
+
+        $this->sendEmailService = $sendEmailService;
     }
 
-    public function createOrderWithDelivery(User $user, array $panier, string $paymentMethod): Order
+    public function calculateFinalPrice(array $cartDetails): float
     {
+        $finalPrice = 0;
+    
+        foreach ($cartDetails as $item) {
+            if (isset($item['details']['final_price'])) {
+                $finalPrice += (float)$item['details']['final_price'];
+            }
+        }
+    
+        return $finalPrice;
+    }
+    
+    public function createOrder($user , array $cartDetails, string $paymentMethod ) : Order
+    {
+        
         $order = (new Order())
             ->setUser($user)
-            ->setRef(uniqid(true))
             ->setPaymentMethod($paymentMethod)
-            ->setType('commande')
-            ->setRef(uniqid())
+            ->setRef(uniqid('VG-'))
+            ->setType('Commande')
+            ->setStatus('En attente de validation')
             ->setPaymentDate(new \DateTimeImmutable())
-            ->setPaymentStatus('En attente de validation')
-            ->setDate(new \DateTimeImmutable())
-            ->setStatus('En cours de traitement');
+            ->setPaymentStatus('En attente de paiement')
+            ->setDate(new \DateTimeImmutable());
+    
+        $final_price = $this->calculateFinalPrice($cartDetails);
+    
+        $order->setTotal($final_price);
+    
+        
 
-        $totalAmount = 0;
+        foreach ($cartDetails as $item) {
 
-        foreach ($panier as $productId => $quantity) {
-            $product = $this->entityManager->getRepository(Product::class)->find($productId);
-
-            if (!$product) {
-                throw new \Exception("Le produit avec l'ID $productId n'a pas été trouvé.");
-            }
-
-            if ($product->getStock() < $quantity) {
-                throw new \Exception(`Stock insuffisant pour le produit {$product->getLabel()}`);
-            }
-
-            $taxRate = $product->getTax()?->getRate() ?? 0;
-            $priceWithTax = $product->getPrice() * (1 + $taxRate / 100);
-            $total = $priceWithTax * $quantity;
-
-            $totalAmount += $total;
-
-
-            $orderDetail = (new OrderDetails())
+            // Doctrine 2
+            // $item['product'] = $this->entityManager->merge($item['product']);
+            $item['product'] = $this->entityManager->getRepository(\App\Entity\Product::class)->findById($item['product']->getId())[0];
+            dump($item);
+            $orderDetails = (new OrderDetails())
                 ->setOrder($order)
-                ->setProduct($product)
-                ->setQuantity($quantity)
-                ->setPrice($priceWithTax);
-
-
-            $product->setStock($product->getStock() - $quantity);
-
-            $this->entityManager->persist($orderDetail);
-            $this->entityManager->persist($product);
+                ->setProduct($item['product'])
+                ->setQuantity($item['quantity'])
+                ->setPrice($item['details']['price_quantity']);
+            dump($orderDetails);
+            $this->entityManager->persist($orderDetails);
         }
-
-        $order->setTotal($totalAmount);
-
-
-        $delivery = new Delivery();
-        $delivery->setOrd($order)
-            ->setDate(new \DateTimeImmutable())
-            ->setRef(uniqid())
-            ->setNote('Livraison en cours de traitement');
-
-
         $this->entityManager->persist($order);
-        $this->entityManager->persist($delivery);
+
         $this->entityManager->flush();
 
+        
         return $order;
+
+    }
+    
+
+
+    public function sendOrderConfirmationEmail(User $user, $order, $orderDetails): void
+    {
+        $this->sendEmailService->send(
+            'no-reply@VillageGreen.com',
+            $user->getEmail(),
+            'Validation de commande',
+            'recap',
+            [
+                'user' => $user,
+                'order'=> $order,
+                'orderDetails'=>$orderDetails
+            ]
+        );
     }
 }

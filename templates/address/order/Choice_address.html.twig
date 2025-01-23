@@ -35,7 +35,7 @@
 		<!-- Vérification si l'utilisateur a 2 adresses -->
 		{% if user.address|length == 2 %}
 			<section class="mt-8 text-center">
-				<a href="{{ path('cart_recap') }}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition transform hover:scale-105">
+				<a href="{{path('cart_checkout')}}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition transform hover:scale-105">
 					Allez au recapitulatif
 				</a>
 			</section>

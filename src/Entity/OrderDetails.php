@@ -11,9 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
 class OrderDetails
 {
     #[ORM\Id]
-    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: "orderDetails")]
-    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
-    private ?Product $product = null;
+    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: "orderDetails", cascade: ["persist"])]
+#[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+private ?Product $product = null;
 
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: "orderDetails")]

@@ -22,7 +22,7 @@
 			{{ form_end(formPaiementMethod) }}
 		</section>
 
-		{% set paiement = app.session.get('paiement') %}
+		{% set paiement = app.session.get('paymentMethod') %}
 
 		{% if paiement == 'carte bancaire' %}
 			<!-- Paiement par carte bancaire -->
@@ -62,10 +62,10 @@
 		{% endif %}
 
 
-		{% if app.session.get('paiement')=='cheque' or app.session.get('paiement')=='virement bancaire' %}
+		{% if app.session.get('paymentMethod')=='cheque' or app.session.get('paymentMethod')=='virement bancaire' %}
 			<section class="mt-8">
 				<p class="text-gray-700">
-					<a href="{{ path('cart_order') }}" class="text-blue-600 hover:underline">Valider la commande
+					<a href="{{ path('cart_validation') }}" class="text-blue-600 hover:underline">Valider la commande
 					</a>
 				</p>
 			</section>
