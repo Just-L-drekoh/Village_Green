@@ -50,35 +50,43 @@
 		{% endif %}
 
 		<h3>Détails des produits</h3>
-		<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-			<thead>
-				<tr>
-					<th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: left;">Produit</th>
-					<th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: center;">Quantité</th>
-					<th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">Prix Unitaire</th>
-					<th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">Total</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for detail in orderDetails %}
-					<tr>
-						<td style="padding: 8px; border-bottom: 1px solid #eee;">{{ detail.product.label }}</td>
-						<td style="padding: 8px; text-align: center; border-bottom: 1px solid #eee;">{{ detail.quantity }}</td>
-						<td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">{{ detail.price|number_format(2, ',', ' ') }}
-							€</td>
-						<td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">
-							{{ (detail.price * detail.quantity)|number_format(2, ',', ' ') }}
-							€
-						</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+		<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+    <thead>
+        <tr>
+            <th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: left;">Produit</th>
+            <th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: center;">Quantité</th>
+            <th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">Prix Unitaire</th>
+            <th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">Total</th>
+            <th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">TVA</th>
+            <th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">Coef</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in 0..(orderDetails|length - 1) %}
+        <tr>
+            <!-- Informations sur le produit -->
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ orderDetails[i].product.label }}</td>
+            <td style="padding: 8px; text-align: center; border-bottom: 1px solid #eee;">{{ orderDetails[i].quantity }}</td>
+            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">{{ orderDetails[i].price / orderDetails[i].quantity }} HT €</td>
+            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">{{ orderDetails[i].price }} € HT</td>
+            
+            <!-- Informations sur la TVA et le Coef -->
+            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">
+                <span style="font-weight: bold;">{{ cartDetails[i].details.price_quantity * cartDetails[i].details.tax_rate }} €</span>
+            </td>
+            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">
+                <span style="font-weight: bold;">{{ cartDetails[i].details.user_coef }}</span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 
 		<!-- Montant total -->
 		<h3 style="margin-top: 20px;">Montant Total :
 			<span style="color: #006400;">{{ order.total|number_format(2, ',', ' ') }}
-				€</span>
+				€ TTC</span>
 		</h3>
 
 		<p>Nous vous remercions pour votre confiance et restons à votre disposition pour toute question.</p>

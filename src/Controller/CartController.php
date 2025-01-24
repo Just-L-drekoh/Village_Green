@@ -177,11 +177,10 @@ class CartController extends AbstractController
             $this->addFlash('error', 'Veuillez choisir un mode de paiement.');
             return $this->redirectToRoute('cart_payment');
         }
-            $final_price = $session->get('cartDetails',['final_price']);
         
-          $order = $this->orderService->createOrder($user, $cartDetails, $paymentMethod, $final_price);
+          $order = $this->orderService->createOrder($user, $cartDetails, $paymentMethod);
           $orderDetails = $this->entityManager->getRepository(OrderDetails::class)->findBy(['order' => $order]);
-          $this->orderService->sendOrderConfirmationEmail($user, $order, $orderDetails);
+          $this->orderService->sendOrderConfirmationEmail($user, $order, $orderDetails, $cartDetails);
     
             $this->addFlash('success', 'Votre commande a été validée.');
             $session->remove('shoppingCart'); 

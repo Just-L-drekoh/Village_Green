@@ -7,6 +7,7 @@ use App\Entity\Order;
 use App\Entity\OrderDetails;
 use App\Service\SendEmailService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class OrderService
 {
@@ -78,8 +79,9 @@ class OrderService
     
 
 
-    public function sendOrderConfirmationEmail(User $user, $order, $orderDetails): void
+    public function sendOrderConfirmationEmail(User $user, $order, $orderDetails, $cartDetails): void
     {
+        
         $this->sendEmailService->send(
             'no-reply@VillageGreen.com',
             $user->getEmail(),
@@ -88,7 +90,8 @@ class OrderService
             [
                 'user' => $user,
                 'order'=> $order,
-                'orderDetails'=>$orderDetails
+                'orderDetails'=>$orderDetails,
+                'cartDetails' => $cartDetails
             ]
         );
     }
