@@ -181,8 +181,9 @@ class CartController extends AbstractController
           $order = $this->orderService->createOrder($user, $cartDetails, $paymentMethod);
           $orderDetails = $this->entityManager->getRepository(OrderDetails::class)->findBy(['order' => $order]);
           $this->orderService->sendOrderConfirmationEmail($user, $order, $orderDetails, $cartDetails);
+          $this->orderService->sendOrderConfirmationEmailtoAdmin($user, $order, $orderDetails, $cartDetails);
     
-            $this->addFlash('success', 'Votre commande a été validée.');
+            $this->addFlash('success', 'Votre commande a été validée.Vous avez reçu un email de confirmation.');
             $session->remove('shoppingCart'); 
             $session->remove('paymentMethod');
        

@@ -7,8 +7,32 @@
 	<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
 		<h2 style="color: #006400;">Merci pour votre commande sur Village Green !</h2>
 
+		{% for user in user.address %}
+			{% if user.type == 'Facturation' %}
+				<h3>Adresse de facturation</h3>
+				<address style="font-style: normal; background-color: #f9f9f9; padding: 10px; border-left: 4px solid #006400; margin: 10px 0;">
+					<strong>{{ user.address }}</strong><br>
+					{{ user.cp }}
+					{{ user.city }}<br>
+					{{ user.city }}
+				</address>
+			{% endif %}
+		{% endfor %}
+
+		{% for user in user.address %}
+			{% if user.type == 'Livraison' %}
+				<h3>Adresse de livraison</h3>
+				<address style="font-style: normal; background-color: #f9f9f9; padding: 10px; border-left: 4px solid #006400; margin: 10px 0;">
+					<strong>{{ user.address }}</strong><br>
+					{{ user.cp }}
+					{{ user.city }}<br>
+					{{ user.city }}
+				</address>
+			{% endif %}
+		{% endfor %}
+
 		<p>Bonjour
-			<strong>{{ user.firstName }}</strong>,</p>
+			<strong>{{ user.firstName }}- {{user.lastName}}</strong>,</p>
 		<p>Nous vous confirmons que votre commande a bien été enregistrée. Voici le récapitulatif :</p>
 
 		<h3>Informations de la commande</h3>
@@ -51,39 +75,39 @@
 
 		<h3>Détails des produits</h3>
 		<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-    <thead>
-        <tr>
-            <th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: left;">Produit</th>
-            <th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: center;">Quantité</th>
-            <th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">Prix Unitaire</th>
-            <th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">Total</th>
-            <th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">TVA</th>
-            <th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">Coef</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for i in 0..(orderDetails|length - 1) %}
-        <tr>
-            <!-- Informations sur le produit -->
-            <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ orderDetails[i].product.label }}</td>
-            <td style="padding: 8px; text-align: center; border-bottom: 1px solid #eee;">{{ orderDetails[i].quantity }}</td>
-            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">{{ orderDetails[i].price / orderDetails[i].quantity }} HT €</td>
-            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">{{ orderDetails[i].price }} € HT</td>
-            
-            <!-- Informations sur la TVA et le Coef -->
-            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">
-                <span style="font-weight: bold;">{{ cartDetails[i].details.price_quantity * cartDetails[i].details.tax_rate }} €</span>
-            </td>
-            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">
-                <span style="font-weight: bold;">{{ cartDetails[i].details.user_coef }}</span>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+			<thead>
+				<tr>
+					<th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: left;">Produit</th>
+					<th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: center;">Quantité</th>
+					<th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">Prix Unitaire</th>
+					<th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">Total</th>
+					<th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">TVA</th>
+					<th style="border-bottom: 1px solid #ddd; padding: 8px; text-align: right;">Coef</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for i in 0..(orderDetails|length - 1) %}
+					<tr>
+						<td style="padding: 8px; border-bottom: 1px solid #eee;">{{ orderDetails[i].product.label }}</td>
+						<td style="padding: 8px; text-align: center; border-bottom: 1px solid #eee;">{{ orderDetails[i].quantity }}</td>
+						<td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">{{ orderDetails[i].price / orderDetails[i].quantity }}
+							HT €</td>
+						<td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">{{ orderDetails[i].price }}
+							€ HT</td>
+
+						<td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">
+							<span style="font-weight: bold;">{{ cartDetails[i].details.price_quantity * cartDetails[i].details.tax_rate }}
+								€</span>
+						</td>
+						<td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee;">
+							<span style="font-weight: bold;">{{ cartDetails[i].details.user_coef }}</span>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 
 
-		<!-- Montant total -->
 		<h3 style="margin-top: 20px;">Montant Total :
 			<span style="color: #006400;">{{ order.total|number_format(2, ',', ' ') }}
 				€ TTC</span>

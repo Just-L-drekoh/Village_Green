@@ -95,4 +95,22 @@ class OrderService
             ]
         );
     }
+
+    public function sendOrderConfirmationEmailToAdmin(User $user, $order, $orderDetails, $cartDetails): void
+    {
+        
+        $this->sendEmailService->send(
+            $user->getEmail(),
+            'no-reply@VillageGreen.com',
+            'Nouvelle commande passée par ' . $user->getFirstname() . ' ' . $user->getLastname(),
+            'newCommande',
+            [
+                'user' => $user,
+                'order'=> $order,
+                'orderDetails'=>$orderDetails,
+                'cartDetails' => $cartDetails
+            ]
+            );
+
+}
 }

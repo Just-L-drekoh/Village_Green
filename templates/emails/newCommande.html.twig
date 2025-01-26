@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle commande - Village Green</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #006400;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        table th {
+            background-color: #f4f4f4;
+        }
+        address {
+            font-style: normal;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-left: 4px solid #006400;
+            margin: 10px 0;
+        }
+        .total {
+            font-size: 1.2em;
+            color: #006400;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Nouvelle commande passée</h1>
+    <h2>Bonjour,</h2>
+    <p>Une nouvelle commande a été passée par <strong>{{ user.firstname }} {{ user.lastname }}</strong>.</p>
+
+    <h3>Informations de la commande</h3>
+    <ul>
+        <li><strong>Référence :</strong> {{ order.ref }}</li>
+        <li><strong>Date :</strong> {{ order.date|date('d/m/Y H:i') }}</li>
+        <li><strong>Méthode de paiement :</strong> {{ order.paymentMethod }}</li>
+        <li><strong>Statut :</strong> {{ order.paymentStatus }}</li>
+    </ul>
+
+    {% for user in user.address %}
+			{% if user.type == 'Facturation' %}
+				<h3>Adresse de facturation</h3>
+				<address style="font-style: normal; background-color: #f9f9f9; padding: 10px; border-left: 4px solid #006400; margin: 10px 0;">
+					<strong>{{ user.address }}</strong><br>
+					{{ user.cp }}
+					{{ user.city }}<br>
+					{{ user.city }}
+				</address>
+			{% endif %}
+		{% endfor %}
+
+		{% for user in user.address %}
+			{% if user.type == 'Livraison' %}
+				<h3>Adresse de livraison</h3>
+				<address style="font-style: normal; background-color: #f9f9f9; padding: 10px; border-left: 4px solid #006400; margin: 10px 0;">
+					<strong>{{ user.address }}</strong><br>
+					{{ user.cp }}
+					{{ user.city }}<br>
+					{{ user.city }}
+				</address>
+			{% endif %}
+		{% endfor %}
+
+    <h3>Détails des produits</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix Unitaire</th>
+                <th>Total HT</th>
+                <th>TVA</th>
+                <th>Coefficient</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detail in orderDetails %}
+                <tr>
+                    <td>{{ detail.product.label }}</td>
+                    <td>{{ detail.quantity }}</td>
+                    <td>{{ (detail.price / detail.quantity)|number_format(2, ',', ' ') }} €</td>
+                    <td>{{ detail.price|number_format(2, ',', ' ') }} €</td>
+                    <td>{{ cartDetails[loop.index0].details.tax_rate|number_format(2, ',', ' ') }} €</td>
+                    <td>{{ cartDetails[loop.index0].details.user_coef }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 class="total">Montant Total : {{ order.total|number_format(2, ',', ' ') }} € TTC</h3>
+
+    <p class="footer">Cet email est généré automatiquement. Merci de ne pas y répondre.</p>
+</body>
+</html>
