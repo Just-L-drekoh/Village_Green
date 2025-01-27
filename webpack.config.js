@@ -23,6 +23,7 @@ Encore
   .addEntry("app", "./assets/app.js")
   .addEntry("navbar", "./assets/navbar.js")
   .addEntry("searchbar", "./React/SearchBar/main.jsx")
+  .addEntry("dashboard", "./React/Dashboard/main.jsx")
   // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
   .splitEntryChunks()
 

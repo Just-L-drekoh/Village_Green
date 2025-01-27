@@ -48,7 +48,7 @@ class AppFixtures extends Fixture
             $user->setPhone('0000000000');
             $user->setLastConnect(new \DateTimeImmutable());
             $user->setVerified(true);
-            $user->setRef("Cli:00000");
+            $user->setRef(uniqid("Adm:"));
             $user->setRoles(['ROLE_ADMIN']);
 
             $manager->persist($user);
@@ -65,7 +65,7 @@ class AppFixtures extends Fixture
             $user->setPhone('0123456789');
             $user->setLastConnect(new \DateTimeImmutable());
             $user->setVerified(false);
-            $user->setRef("Cli:12345");
+            $user->setRef(uniqid("Adm:"));
             $user->setRoles(['ROLE_ADMIN']);
 
             $manager->persist($user);
@@ -84,7 +84,7 @@ class AppFixtures extends Fixture
                 $user->setPhone($faker->phoneNumber);
                 $user->setLastConnect(new \DateTimeImmutable());
                 $user->setVerified(false);
-                $user->setRef("Cli:" . mt_rand(10000, 99999));
+                $user->setRef(uniqid("Usr:"));
                 $user->setRoles(['ROLE_USER']);
                 $user->setCoef(1.0);
                 $user->setService($faker->randomElement($manager->getRepository(\App\Entity\Service::class)->findAll()));

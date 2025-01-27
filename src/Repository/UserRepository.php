@@ -57,4 +57,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function searchRef(string $query): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.ref LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->getQuery()
+            ->getResult() ?: [];
+    }
+    
 }

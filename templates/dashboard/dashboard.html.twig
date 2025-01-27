@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard - Village Green{% endblock %}
+
+{% block body %}
+    <h1>Bienvenue dans l'administration de Village Green</h1>
+    
+    <div id="dashboard"></div>
+{% endblock %}
+{% block javascripts %}
+	{{ encore_entry_script_tags('dashboard') }}
+{% endblock %}
