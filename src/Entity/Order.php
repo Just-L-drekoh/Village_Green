@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -16,21 +18,32 @@ class Order
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['order:read'])]
+
     private ?string $ref = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['order:read'])]
+
     private ?string $status = null;
 
     #[ORM\Column(nullable:true)]
+    #[Groups(['order:read'])]
+
     private ?\DateTimeImmutable $paymentDate = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['order:read'])]
+
     private ?string $paymentMethod = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(['order:read'])]
+
     private ?string $total = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -40,9 +53,13 @@ class Order
     private ?string $type = null;
 
     #[ORM\Column]
+    #[Groups(['order:read'])]
+
     private ?\DateTimeImmutable $date = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['order:read'])]
+
     private ?string $paymentStatus = null;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]

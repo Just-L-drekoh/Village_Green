@@ -1,10 +1,10 @@
 import React from "react";
 
-const SearchBar = ({ query, setQuery }) => {
+const SearchBar = ({ query, setQuery, placeholder, title }) => {
   return (
     <div className="p-4 mt-8 flex flex-col items-center">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-        Rechercher un Utilisateurs
+        {title}
       </h2>
       <input
         aria-label="Rechercher un produit"
@@ -12,7 +12,7 @@ const SearchBar = ({ query, setQuery }) => {
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Rechercher un Utilisateurs par la Reference ..."
+        placeholder={placeholder}
       />
     </div>
   );

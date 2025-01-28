@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
+use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,8 +28,8 @@ class ApiController extends AbstractController
         }
     }
 
-    #[Route('/dashboard', name: 'dashboard')]
-    public function dashboard(Request $request, UserRepository $userRepository): Response
+    #[Route('/dashboard/users', name: 'dashboard_users')]
+    public function dashboardUsers(Request $request, UserRepository $userRepository): Response
     {
         try {
             $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -38,7 +39,7 @@ class ApiController extends AbstractController
                 return $this->json(['error' => 'The search query must be at least 3 characters long.'], 400);
             }
     
-            $users = $userRepository->searchRef($query);
+            $users = $userRepository->searchUser($query);
             return $this->json(
                 $users,
                 context: [AbstractNormalizer::GROUPS => ['user:read']]
@@ -46,6 +47,27 @@ class ApiController extends AbstractController
             return $this->json(['error' => 'Vous n\'avez pas les droits pour accéder à cette page'], 403);
         } catch (\Exception $e) {
             return $this->json(['error' => 'An unexpected error occurred.'.$e], 500);
+        }
+    }
+
+    #[Route('/dashboard/orders', name : 'dashboard_orders')]
+    public function dashboardOrders(Request $request, OrderRepository $orderRepository)
+    {
+        try {
+            $this->denyAccessUnlessGranted('ROLE_ADMIN');
+            $query = $request->query->get('q', '');
+            if (strlen($query)< 3){
+                return $this->json(['error'=> 'La recherche doit etre au minimum de 3 caracteres '], 400);
+            }
+
+            $orders = $orderRepository->SearchOrder($query);
+            return $this->json(
+                $orders,
+                context: [AbstractNormalizer::GROUPS => ['order:read']]
+
+            );
+        } catch (\Exception $e) {
+            return $this->json(['error' => 'Une erreur inattendue est survenue'], 500);
         }
     }
     

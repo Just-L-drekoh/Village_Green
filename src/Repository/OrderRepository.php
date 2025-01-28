@@ -40,4 +40,15 @@ class OrderRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function searchOrder($query): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.ref LIKE :query')
+            ->setParameter('query', '%'.$query.'%')
+            ->orderBy('o.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
 }
