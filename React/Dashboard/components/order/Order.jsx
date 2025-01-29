@@ -26,7 +26,7 @@ const Order = () => {
             )
             if (!response.ok) {
                 throw new Error (
-                    "Une Erreur est survevue lors du chargement des Commandes."
+                    "Une Erreur est survenue lors du chargement des Commandes."
                 );
             }
             const data = await response.json()
@@ -37,7 +37,7 @@ const Order = () => {
             setError("Impossible de charger les Commandes. Veuillez reessayer.");
             setOrders([]);
         } finally {
-            setLoading(false);
+            setLoading(false);users
         }
     }, [query])
 
@@ -54,21 +54,27 @@ const Order = () => {
 
     return (
         <>
-        <SearchBar query={query} setQuery={setQuery} placeholder="Rechercher une Commande par la Reference ..." title="Rechercher une Commande" />
-
-        <div className="container mx-auro p-6">
+          <SearchBar query={query} setQuery={setQuery} placeholder="Rechercher une Commande par la Reference ..." title="Rechercher une Commande" />
+    
+          <div className="container mx-auto p-6">
             {loading && (
-                <div className="text-center text-gray-500">
-                    <p>Chargement de la Commande</p>
-                </div>
+              <div className="text-center text-gray-500">
+                <p>Chargement de la commande</p>
+              </div>
             )}
-
-            {error && <ErrorDisplay message={error} />}
-
-            {orders.length > 0 && <OrderList orders={orders} />}
-        </div>
+    
+            {error && <ErrorDisplay error={error} />}
+    
+            {!loading && !error && orders.length === 0 && query.trim() !== "" && (
+              <div className="text-center text-gray-500">
+                <p>Aucune commande</p>
+              </div>
+            )}
+    
+            {!loading && orders.length > 0 && <OrderList orders={orders} />}
+          </div>
         </>
-    );
+      );
     };
 
 export default Order;

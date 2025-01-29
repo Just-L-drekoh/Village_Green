@@ -23,17 +23,14 @@ class Order
 
     #[ORM\Column(length: 50)]
     #[Groups(['order:read'])]
-
     private ?string $ref = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['order:read'])]
-
     private ?string $status = null;
 
     #[ORM\Column(nullable:true)]
     #[Groups(['order:read'])]
-
     private ?\DateTimeImmutable $paymentDate = null;
 
     #[ORM\Column(length: 100)]
@@ -43,7 +40,6 @@ class Order
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Groups(['order:read'])]
-
     private ?string $total = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -54,7 +50,6 @@ class Order
 
     #[ORM\Column]
     #[Groups(['order:read'])]
-
     private ?\DateTimeImmutable $date = null;
 
     #[ORM\Column(length: 50)]

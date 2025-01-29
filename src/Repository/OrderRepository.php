@@ -51,4 +51,23 @@ class OrderRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function turnoverYear($query): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        
+        $sql = '
+            SELECT MONTH(o.date) as month, SUM(o.total) as chiffreAffaire
+            FROM `order` o
+            WHERE YEAR(o.date) = :year
+            GROUP BY month
+            ORDER BY month ASC
+        ';
+        
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['year' => $query]);
+        
+        return $resultSet->fetchAllAssociative();
+    }
+
 }

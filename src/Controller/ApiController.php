@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Validator\Constraints\Length;
 
 #[Route('/api', name: 'api_')]
 class ApiController extends AbstractController
@@ -70,5 +71,33 @@ class ApiController extends AbstractController
             return $this->json(['error' => 'Une erreur inattendue est survenue'], 500);
         }
     }
+
+    #[Route('/dashboard/turnover', name: 'dashboard_turnover')]
+    public function dashboardTurnover(Request $request, OrderRepository $orderRepository)
+    {
+        try {
+            $this->denyAccessUnlessGranted('ROLE_ADMIN');
+    
+            $query = (int) $request->get('q', ''); 
+            
+            if ($query < 1000 || $query > 9999) {
+                return $this->json(['error' => 'La recherche doit être une année à 4 chiffres'], 400);
+            }
+            
+            $turnover = $orderRepository->turnoverYear($query);
+            
+            return $this->json(
+                $turnover,
+                200,
+                [],
+                [AbstractNormalizer::GROUPS => ['order:read']]
+            );
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    
+    
+    
     
 }

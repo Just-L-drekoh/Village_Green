@@ -6,8 +6,8 @@ const UserList = ({ users }) => {
       {users.map((user) => (
         <li
           key={user.firstName}
-          className="flex items-center p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:scale-[1.02] transition-transform duration-200"
-        >
+          className="flex flex-col md:flex-row items-center justify-between p-4 border border-gray-300 rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200 bg-white mx-auto"
+          >
           <div className="flex-grow">
             <h3 className="text-lg font-semibold text-gray-800">
               {user.firstName} {user.lastName}
