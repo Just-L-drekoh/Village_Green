@@ -75,7 +75,7 @@ class OrderRepository extends ServiceEntityRepository
     public function turnoverSupplier(string $ref): array
     {
         return $this->createQueryBuilder('o')
-            ->select('(od.price * od.quantity) AS turnover, sd.ref AS reference, od.quantity AS quantity, od.price AS price, u.lastName AS nom')
+            ->select('(od.price * od.quantity) AS turnover, sd.ref AS reference, od.quantity AS quantity, od.price AS price, u.lastName AS lastName')
             ->join('o.orderDetails', 'od') 
             ->join('od.product', 'p')
             ->join('p.supplier', 'sd')

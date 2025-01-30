@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import GraphTurnover from './GraphTurnoverSupplier';
 
 const TurnoverSupplier = () => {
     const [supplier, setSupplier] = useState('');
@@ -38,8 +39,8 @@ const TurnoverSupplier = () => {
                     placeholder="Rechercher un fournisseur..."
                     value={supplier}
                     onChange={(e) => setSupplier(e.target.value)}
-                />    </>
-    
+                />  <GraphTurnover data={turnoverSupplier}/>  </>
+        
 };
 
 
