@@ -64,6 +64,8 @@ class Order
     /**
      * @var Collection<int, Delivery>
      */
+
+     
     #[ORM\OneToMany(targetEntity: Delivery::class, mappedBy: 'ord')]
     private Collection $deliveries;
 

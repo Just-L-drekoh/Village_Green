@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Order;
+use App\Entity\OrderDetails;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -69,5 +70,20 @@ class OrderRepository extends ServiceEntityRepository
         
         return $resultSet->fetchAllAssociative();
     }
+
+    public function turnoverSupplier(int $supplierId): array
+    {
+        return $this->createQueryBuilder('o')
+            ->select('o.total AS turnover, sd.ref AS reference')
+            ->join('o.orderDetails', 'od') 
+            ->join('od.product', 'p')
+            ->join('p.supplier', 'sd') 
+            ->where('p.supplier = :supplierId')
+            ->setParameter('supplierId', $supplierId)
+            ->getQuery()
+            ->getResult();
+    }
+    
+    
 
 }

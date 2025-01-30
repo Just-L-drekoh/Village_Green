@@ -1,30 +1,34 @@
-import React from 'react'
-import { Line } from 'react-chartjs-2'
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
+import React from 'react';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(
     CategoryScale,
     LinearScale,
-    PointElement,
-    LineElement,
+    BarElement,
     Title,
     Tooltip,
     Legend
-)
+);
+
+const monthNames = [
+    "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+    "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+];
 
 const GraphTurnover = ({ year, data }) => {
     const chartData = {
-        labels: data.map(item => item.month), 
+        labels: data.map(item => monthNames[item.month - 1] || "Inconnu"), 
         datasets: [
             {
                 label: 'Chiffre d\'affaires (€)',
-                data: data.map(item => parseFloat(item.chiffreAffaire)), // Extract chiffreAffaire values
-                fill: false,
+                data: data.map(item => parseFloat(item.chiffreAffaire)), 
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
                 borderColor: 'rgba(75, 192, 192, 1)',
-                tension: 0.1
+                borderWidth: 1
             }
         ]
-    }
+    };
 
     const options = {
         responsive: true,
@@ -46,21 +50,21 @@ const GraphTurnover = ({ year, data }) => {
                 beginAtZero: true
             }
         }
-    }
+    };
 
     return (
         <>
-            <h1>Graph Turnover</h1>
+            <h1>Graphique du Chiffre d'Affaires</h1>
             <p>Année: {year}</p>
             <p>Nombre de mois de données: {data.length}</p>
 
-            <Line data={chartData} options={options} />
+            <Bar data={chartData} options={options} />
 
             <ul>
                 {data.map((item, index) => (
                     <li key={index}>
-                        <strong>{item.month}</strong>: 
-                        <span>{parseFloat(item.chiffreAffaire).toFixed(2)} €</span>
+                        <strong>{monthNames[item.month - 1] || "Inconnu"}</strong>: 
+                        <span> {parseFloat(item.chiffreAffaire).toFixed(2)} €</span>
                     </li>
                 ))}
             </ul>

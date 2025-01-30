@@ -72,8 +72,8 @@ class ApiController extends AbstractController
         }
     }
 
-    #[Route('/dashboard/turnover', name: 'dashboard_turnover')]
-    public function dashboardTurnover(Request $request, OrderRepository $orderRepository)
+    #[Route('/dashboard/turnoverYear', name: 'dashboard_turnoverYear')]
+    public function dashboardTurnoverYear(Request $request, OrderRepository $orderRepository)
     {
         try {
             $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -97,6 +97,24 @@ class ApiController extends AbstractController
         }
     }
     
+
+    #[Route('/dashboard/turnoverSupplier', name: 'dashboard_turnoverSupplier' )]
+    public function dashboardTurnoverSupplier(Request $request, OrderRepository $orderRepository)
+    {
+        try {
+            $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+            $supplierId = (int) $request->get('q',5);
+
+            $turnoverSupplier = $orderRepository->turnoverSupplier($supplierId);
+
+            return $this->json($turnoverSupplier,200,[]);
+        } catch(\Exception $e){
+            return $this->json(['error'=> $e->getMessage()],500);
+        }
+    }
+
+
     
     
     

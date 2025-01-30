@@ -9,14 +9,14 @@ const Turnover = () => {
     useEffect(() => {
         const fetchTurnover = async () => {
             try {
-                const response = await fetch(`/api/dashboard/turnover?q=${year}`);
+                const response = await fetch(`/api/dashboard/turnoverYear?q=${year}`);
                 if (!response.ok) {
-                    throw new Error("Une erreur est survenue pendant la récuperation de données de Chiffre d'Affaire .");
+                    throw new Error("Une erreur est survenue pendant la récupération des données du Chiffre d'Affaire.");
                 }
                 const data = await response.json();
                 setTurnoverData(data);
             } catch (err) {
-                console.error("<une erreur D'API est survenue", err);
+                console.error("Une erreur API est survenue :", err);
                 setTurnoverData([]);
             }
         };
@@ -24,11 +24,21 @@ const Turnover = () => {
         fetchTurnover();
     }, [year]);
 
+    const handleYearChange = (e) => {
+        setYear(parseInt(e.target.value, 10));
+    };
 
+    const years = Array.from({ length: 16 }, (_, i) => currentYear - 10 + i);
 
     return (
         <>
-
+            <select value={year} onChange={handleYearChange}>
+                {years.map((yr) => (
+                    <option key={yr} value={yr}>
+                        {yr}
+                    </option>
+                ))}
+            </select>
             <GraphTurnover year={year} data={turnoverData} />
         </>
     );
