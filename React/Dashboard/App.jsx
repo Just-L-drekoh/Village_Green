@@ -4,6 +4,7 @@ import Layout from './Layout.jsx';
 import User from './components/user/User.jsx';
 import Order from './components/order/Order.jsx';
 import Turnover from './components/turnover/Turnover.jsx';
+import TurnoverSupplier from './components/turnover/TurnoverSupplier.jsx';
 const Dashboard = () => <h1>Admin Dashboard</h1>;
 
 const App = () => {
@@ -15,6 +16,7 @@ const App = () => {
                     <Route path="orders" element={<Order />} />
                     <Route path="users" element={<User />} />
                     <Route path="turnover" element={<Turnover/>} />
+                    <Route path="turnoverSupplier" element={<TurnoverSupplier/>} />
                 </Route>
             </Routes>
         </div>

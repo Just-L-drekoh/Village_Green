@@ -64,7 +64,7 @@ class OrderService
                 ->setOrder($order)
                 ->setProduct($item['product'])
                 ->setQuantity($item['quantity'])
-                ->setPrice($item['details']['price_quantity']);
+                ->setPrice($item['details']['price_per_unit']);
             dump($orderDetails);
             $this->entityManager->persist($orderDetails);
         }

@@ -104,9 +104,9 @@ class ApiController extends AbstractController
         try {
             $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-            $supplierId = (int) $request->get('q',5);
+            $ref = (string) $request->get('q','');
 
-            $turnoverSupplier = $orderRepository->turnoverSupplier($supplierId);
+            $turnoverSupplier = $orderRepository->turnoverSupplier($ref);
 
             return $this->json($turnoverSupplier,200,[]);
         } catch(\Exception $e){

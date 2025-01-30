@@ -6,6 +6,7 @@ use App\Entity\Order;
 use App\Entity\OrderDetails;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use PHPUnit\Framework\Constraint\StringContains;
 
 /**
  * @extends ServiceEntityRepository<Order>
@@ -71,18 +72,20 @@ class OrderRepository extends ServiceEntityRepository
         return $resultSet->fetchAllAssociative();
     }
 
-    public function turnoverSupplier(int $supplierId): array
+    public function turnoverSupplier(string $ref): array
     {
         return $this->createQueryBuilder('o')
-            ->select('o.total AS turnover, sd.ref AS reference')
+            ->select('(od.price * od.quantity) AS turnover, sd.ref AS reference, od.quantity AS quantity, od.price AS price, u.lastName AS nom')
             ->join('o.orderDetails', 'od') 
             ->join('od.product', 'p')
-            ->join('p.supplier', 'sd') 
-            ->where('p.supplier = :supplierId')
-            ->setParameter('supplierId', $supplierId)
+            ->join('p.supplier', 'sd')
+            ->join('sd.user', 'u')  // Ensure this relationship exists
+            ->where('sd.ref = :ref')
+            ->setParameter('ref', $ref)
             ->getQuery()
             ->getResult();
     }
+    
     
     
 

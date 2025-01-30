@@ -74,6 +74,40 @@ class Order
         $this->deliveries = new ArrayCollection();
     }
 
+    #[ORM\OneToMany(targetEntity: OrderDetails::class, mappedBy: 'order')]
+private Collection $orderDetails;
+
+// Correction des type hints dans les méthodes
+/**
+ * @return Collection<int, OrderDetails>
+ */
+public function getOrderDetails(): Collection
+{
+    return $this->orderDetails;
+}
+
+public function addOrderDetail(OrderDetails $orderDetail): static
+{
+    if (!$this->orderDetails->contains($orderDetail)) {
+        $this->orderDetails->add($orderDetail);
+        $orderDetail->setOrder($this);
+    }
+
+    return $this;
+}
+
+public function removeOrderDetail(OrderDetails $orderDetail): static
+{
+    if ($this->orderDetails->removeElement($orderDetail)) {
+        // set the owning side to null (unless already changed)
+        if ($orderDetail->getOrder() === $this) {
+            $orderDetail->setOrder(null);
+        }
+    }
+
+    return $this;
+}
+
     public function getId(): ?int
     {
         return $this->id;
