@@ -114,6 +114,31 @@ class ApiController extends AbstractController
         }
     }
 
+    #[Route('/dashboard/topProductOrder', name: 'dashboard_topProductOrder')]
+    public function dashboardTopProductOrder(Request $request, OrderRepository $orderRepository)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+    
+        try {
+            // Retrieve the year from the request, defaulting to 2025
+            $year = (int) $request->query->get('q', 2025);
+    
+            // Fetch top products from the repository
+            $topProducts = $orderRepository->topProductOrder($year);
+    
+            return $this->json([
+                'success' => true,
+                'data' => $topProducts,
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    
+
 
     
     

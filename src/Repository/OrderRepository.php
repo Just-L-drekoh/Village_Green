@@ -75,17 +75,33 @@ class OrderRepository extends ServiceEntityRepository
     public function turnoverSupplier(string $ref): array
     {
         return $this->createQueryBuilder('o')
-            ->select('(od.price * od.quantity) AS turnover, sd.ref AS reference, od.quantity AS quantity, od.price AS price, u.lastName AS lastName')
+            ->select('SUM(od.price * od.quantity) AS turnover, sd.ref AS reference, SUM(od.quantity) AS quantity, od.price AS price, u.lastName AS lastName')
             ->join('o.orderDetails', 'od') 
             ->join('od.product', 'p')
             ->join('p.supplier', 'sd')
-            ->join('sd.user', 'u')  // Ensure this relationship exists
+            ->join('sd.user', 'u')  
             ->where('sd.ref = :ref')
             ->setParameter('ref', $ref)
+            ->groupBy('sd.ref, od.price, u.lastName') 
             ->getQuery()
             ->getResult();
     }
     
+    public function topProductOrder(int $year): array
+    {
+        return $this->createQueryBuilder('o')
+            ->select('p.ref, p.label, SUM(od.quantity) AS total_quantity, s.ref AS supplier')
+            ->join('o.orderDetails', 'od')
+            ->join('od.product', 'p')
+            ->join('p.supplier', 's')
+            ->where('YEAR(o.date) = :year')
+            ->setParameter('year', $year)
+            ->groupBy('p.id')
+            ->orderBy('total_quantity', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
     
     
 
