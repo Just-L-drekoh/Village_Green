@@ -12,6 +12,7 @@ const Layout = () => {
                         <Link to="/users" className="mx-2">Utilisateurs</Link>
                         <Link to="/turnover" className="mx-2">Chiffres d'affaire</Link>
                         <Link to="/turnoverSupplier" className="mx-2">CA Fournisseurs</Link>
+                        <Link to="/topProductQuantity" className="mx-2">Top 10 Produit Commander</Link>
                     </nav>
                 </div>
             </header>

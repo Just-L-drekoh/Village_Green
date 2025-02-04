@@ -63,6 +63,7 @@ class AppFixtures extends Fixture
             $user->setFirstName('Logan');
             $user->setLastName('Herbomel');
             $user->setPhone('0123456789');
+            $user->setSiret('12345678965748');
             $user->setLastConnect(new \DateTimeImmutable());
             $user->setVerified(false);
             $user->setRef(uniqid("Adm:"));
@@ -183,7 +184,7 @@ class AppFixtures extends Fixture
                 $subrubrique->setSlug($label);
                 $subrubrique->setImage($faker->imageUrl);
                 $subrubrique->setContent($faker->paragraph);
-                $subrubrique->setParent($faker->randomElement($manager->getRepository(\App\Entity\Rubric::class)->findAll()));
+                $subrubrique->setParent($faker->randomElement($manager->getRepository(\App\Entity\Rubric::class)->findBy(['parent' => null])));
 
                 $manager->persist($subrubrique);
             } catch (\Exception $e) {

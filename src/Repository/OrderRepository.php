@@ -87,22 +87,78 @@ class OrderRepository extends ServiceEntityRepository
             ->getResult();
     }
     
-    public function topProductOrder(int $year): array
+    public function topProductQuantity(int $year): array
     {
+        $startDate = new \DateTime($year.'-01-01');
+        $endDate = new \DateTime(($year + 1).'-01-01');
+    
         return $this->createQueryBuilder('o')
             ->select('p.ref, p.label, SUM(od.quantity) AS total_quantity, s.ref AS supplier')
             ->join('o.orderDetails', 'od')
             ->join('od.product', 'p')
             ->join('p.supplier', 's')
-            ->where('YEAR(o.date) = :year')
-            ->setParameter('year', $year)
+            ->where('o.date >= :startDate AND o.date < :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
             ->groupBy('p.id')
             ->orderBy('total_quantity', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult();
     }
+
+
+    public function topProduct(int $year): array
+    {
+        $startDate = new \DateTime($year . '-01-01');
+        $endDate = new \DateTime(($year + 1) . '-01-01');
     
+        $results = $this->createQueryBuilder('o')
+            ->select('o.id AS Commande_ID, o.ref AS Reference_Commande')
+            ->addSelect('sp.ref AS Fournisseur')  // Récupérer chaque fournisseur individuellement
+            ->addSelect('SUM(od.price * od.quantity) AS Total_Produits')
+            ->addSelect('o.total AS Total_Commande')
+            ->addSelect('(o.total - SUM(od.price * od.quantity)) AS Marge')
+            ->join('o.orderDetails', 'od')
+            ->join('od.product', 'p')
+            ->join('p.supplier', 'sp')
+            ->where('o.date BETWEEN :startDate AND :endDate')
+            ->groupBy('o.id, o.ref, sp.ref, o.total') // Ajouter sp.ref pour éviter l'erreur de groupement
+            ->orderBy('Marge', 'DESC')
+            ->setMaxResults(10)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->getQuery()
+            ->getResult();
+    
+        // Concaténation manuelle des fournisseurs
+        $groupedResults = [];
+        foreach ($results as $row) {
+            $commandeId = $row['Commande_ID'];
+    
+            if (!isset($groupedResults[$commandeId])) {
+                $groupedResults[$commandeId] = [
+                    'Commande_ID' => $row['Commande_ID'],
+                    'Reference_Commande' => $row['Reference_Commande'],
+                    'Fournisseurs' => [],
+                    'Total_Produits' => $row['Total_Produits'],
+                    'Total_Commande' => $row['Total_Commande'],
+                    'Marge' => $row['Marge'],
+                ];
+            }
+    
+            $groupedResults[$commandeId]['Fournisseurs'][] = $row['Fournisseur'];
+        }
+    
+        // Transformer le tableau de fournisseurs en une chaîne
+        foreach ($groupedResults as &$result) {
+            $result['Fournisseurs'] = implode(', ', array_unique($result['Fournisseurs']));
+        }
+    
+        return array_values($groupedResults);
+    }
+    
+
     
 
 }

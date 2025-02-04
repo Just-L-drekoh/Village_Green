@@ -4,6 +4,7 @@ namespace App\Service\order;
 
 use App\Entity\User;
 use App\Entity\Order;
+use DateTimeImmutable;
 use App\Entity\OrderDetails;
 use App\Service\SendEmailService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,9 +45,9 @@ class OrderService
             ->setRef(uniqid('VG-'))
             ->setType('Commande')
             ->setStatus('En attente de validation')
-            ->setPaymentDate(new \DateTimeImmutable())
+            ->setPaymentDate(new DateTimeImmutable())
             ->setPaymentStatus('En attente de paiement')
-            ->setDate(new \DateTimeImmutable());
+            ->setDate(new DateTimeImmutable());
     
         $final_price = $this->calculateFinalPrice($cartDetails);
     
