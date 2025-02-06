@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\UserRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -137,24 +138,30 @@ class ApiController extends AbstractController
     }
 
     #[Route('/dashboard/topProduct', name: 'dashboard_topProduct')]
-    public function topProduct(Request $request , OrderRepository $orderRepository)
+    public function topProduct(Request $request, EntityManagerInterface $entityManager)
     {
         try {
-            $this->denyAccessUnlessGranted('ROLE_ADMIN');
             $year = (int) $request->query->get('q', 2025);
-            $topProducts = $orderRepository->topProduct($year);
+
+            $conn = $entityManager->getConnection();
+
+            $sql = 'CALL GetTopOrdersByYear(:year)';
+            $stmt = $conn->prepare($sql);
+            $resultSet = $stmt->executeQuery(['year' => $year]);
+
+            $topProducts = $resultSet->fetchAllAssociative();
+
             return $this->json([
                 'success' => true,
-                 'data' => $topProducts,
+                 'data'=> $topProducts
             ]);
         } catch (\Exception $e) {
             return $this->json([
                 'success' => false,
-                'error' => $e->getMessage(),
+                'error' => $e->getMessage()
             ], 500);
         }
     }
-    
 
 
     
